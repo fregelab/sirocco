@@ -1,0 +1,240 @@
+{--
+  This code has been copied from https://github.com/DellCliff/frege-dbc
+-}
+module sirocco.internal.FDBC where
+
+import sirocco.internal.JDBC
+
+data SqlValue = SqlShort Short
+    | SqlInt Int
+    | SqlLong Long
+    | SqlInteger Integer
+    | SqlBytes [Byte]
+    | SqlBool Bool
+    | SqlFloat Float
+    | SqlDouble Double
+    | SqlDecimal BigDecimal
+    | SqlChar Char
+    | SqlObject Object
+    | SqlDate Date
+    | SqlTime Time
+    | SqlTimestamp Timestamp
+    | SqlString String
+    | SqlNull
+
+data SqlColDesc = SqlColDesc {
+    catalogName :: String,
+    columnClassName :: String,
+    columnDisplaySize :: Int,
+    columnLabel :: String,
+    columnName :: String,
+    columnType :: Int,
+    columnTypeName :: String,
+    precision :: Int,
+    scale :: Int,
+    schemaName :: String,
+    tableName :: String,
+    isAutoIncrement :: Bool,
+    isCaseSensitive :: Bool,
+    isCurrency :: Bool,
+    isDefinitelyWritable :: Bool,
+    isNullable :: Int,
+    isReadOnly :: Bool,
+    isSearchable :: Bool,
+    isSigned :: Bool,
+    isWritable :: Bool
+}
+
+-- Throws Exceptions. Not meant to be used outside this file.
+-- Good information: http://www.cis.upenn.edu/~bcpierce/courses/629/jdkdocs/guide/jdbc/getstart/mapping.doc.html
+-- Numbers are interpreted as the next bigger type to avoid signed/unsigned problems
+-- e.g.  8-bit tinyint becomes 16-bit Java short
+--      16-bit smallint becomes 32-bit Java int
+--      32-bit integer becomes 32-bit Java long
+--      64-bit bigint becomes Java BitInteger
+
+columnConverter :: ResultSet -> Int -> Int -> IO SqlValue
+columnConverter rset idx sql_type
+    | sql_type == Types.null = do { return SqlValue.SqlNull }
+
+    | sql_type == Types.longvarchar = do
+        c <- ResultSet.getString rset idx
+        didreadnull <- ResultSet.wasNull rset
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlString c
+    | sql_type == Types.varchar = columnConverter rset idx Types.longvarchar
+    | sql_type == Types.char = columnConverter rset idx Types.longvarchar
+    | sql_type == Types.clob = columnConverter rset idx Types.longvarchar
+
+    | sql_type == Types.longnvarchar = do
+        c <- ResultSet.getNString rset idx
+        didreadnull <- ResultSet.wasNull rset
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlString c
+    | sql_type == Types.nchar = columnConverter rset idx Types.longnvarchar
+    | sql_type == Types.nvarchar = columnConverter rset idx Types.longnvarchar
+    | sql_type == Types.nclob = columnConverter rset idx Types.longnvarchar
+
+    | sql_type == Types.binary = do
+        c <- ResultSet.getBytes rset idx
+        didreadnull <- ResultSet.wasNull rset
+        res <- if (didreadnull)
+            then do return []
+            else Mutable.readonly (\x -> x.toList) c
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlBytes res
+    | sql_type == Types.varbinary = columnConverter rset idx Types.binary
+    | sql_type == Types.longvarbinary = columnConverter rset idx Types.binary
+    | sql_type == Types.blob = columnConverter rset idx Types.binary
+
+    | sql_type == Types.bit = do
+        c <- ResultSet.getBoolean rset idx
+        didreadnull <- ResultSet.wasNull rset
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlBool c
+    | sql_type == Types.boolean = columnConverter rset idx Types.bit
+
+    | sql_type == Types.tinyint = do
+        c <- ResultSet.getShort rset idx
+        didreadnull <- ResultSet.wasNull rset
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlShort c
+
+    | sql_type == Types.smallint = do
+        c <- ResultSet.getInt rset idx
+        didreadnull <- ResultSet.wasNull rset
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlInt c
+
+    | sql_type == Types.integer = do
+        c <- ResultSet.getLong rset idx
+        didreadnull <- ResultSet.wasNull rset
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlLong c
+
+    | sql_type == Types.bigint = do
+        c <- ResultSet.getBigDecimal rset idx
+        didreadnull <- ResultSet.wasNull rset
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlInteger $ c.toBigInteger
+
+    | sql_type == Types.real = do
+        c <- ResultSet.getFloat rset idx
+        didreadnull <- ResultSet.wasNull rset
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlFloat c
+
+    | sql_type == Types.double = do
+        c <- ResultSet.getDouble rset idx
+        didreadnull <- ResultSet.wasNull rset
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlDouble c
+    | sql_type == Types.float = columnConverter rset idx Types.double
+
+    | sql_type == Types.decimal = do
+        c <- ResultSet.getBigDecimal rset idx
+        didreadnull <- ResultSet.wasNull rset
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlDecimal c
+    | sql_type == Types.numeric = columnConverter rset idx Types.decimal
+
+    | sql_type == Types.date = do
+        c <- ResultSet.getDate rset idx
+        didreadnull <- ResultSet.wasNull rset
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlDate c
+
+    | sql_type == Types.time = do
+        c <- ResultSet.getTime rset idx
+        didreadnull <- ResultSet.wasNull rset
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlTime c
+
+    | sql_type == Types.timestamp = do
+        c <- ResultSet.getTimestamp rset idx
+        didreadnull <- ResultSet.wasNull rset
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlTimestamp c
+
+    | sql_type == Types.java_object = do
+        c <- ResultSet.getObject rset idx
+        didreadnull <- ResultSet.wasNull rset
+        return $ if (didreadnull)
+            then SqlValue.SqlNull
+            else SqlValue.SqlObject c
+    | sql_type == Types.other = columnConverter rset idx Types.java_object
+    | true = columnConverter rset idx Types.java_object
+
+describeColumn :: ResultSetMetaData -> Int -> IO (Either Throwable SqlColDesc)
+describeColumn meta x =
+    catchAll do
+            catalogName <- ResultSetMetaData.getCatalogName meta x
+            columnClassName <- ResultSetMetaData.getColumnClassName meta x
+            columnDisplaySize <- ResultSetMetaData.getColumnDisplaySize meta x
+            columnLabel <- ResultSetMetaData.getColumnLabel meta x
+            columnName <- ResultSetMetaData.getColumnName meta x
+            columnType <- ResultSetMetaData.getColumnType meta x
+            columnTypeName <- ResultSetMetaData.getColumnTypeName meta x
+            precision <- ResultSetMetaData.getPrecision meta x
+            scale <- ResultSetMetaData.getScale meta x
+            schemaName <- ResultSetMetaData.getSchemaName meta x
+            tableName <- ResultSetMetaData.getTableName meta x
+            isAutoIncrement <- ResultSetMetaData.isAutoIncrement meta x
+            isCaseSensitive <- ResultSetMetaData.isCaseSensitive meta x
+            isCurrency <- ResultSetMetaData.isCurrency meta x
+            isDefinitelyWritable <- ResultSetMetaData.isDefinitelyWritable meta x
+            isNullable <- ResultSetMetaData.isNullable meta x
+            isReadOnly <- ResultSetMetaData.isReadOnly meta x
+            isSearchable <- ResultSetMetaData.isSearchable meta x
+            isSigned <- ResultSetMetaData.isSigned meta x
+            isWritable <- ResultSetMetaData.isWritable meta x
+            return SqlColDesc { catalogName, columnClassName,
+                columnDisplaySize, columnLabel,
+                columnName, columnType,
+                columnTypeName, precision, scale,
+                schemaName, tableName, isAutoIncrement,
+                isCaseSensitive, isCurrency,
+                isDefinitelyWritable, isNullable,
+                isReadOnly, isSearchable,
+                isSigned, isWritable }
+
+describeResult :: ResultSet -> IO [SqlColDesc]
+describeResult rset =
+    try unsafe rset `catch` default
+    where
+        unsafe rset = do
+            meta <- ResultSet.getMetaData rset
+            columnCount <- ResultSetMetaData.getColumnCount meta
+            res <- sequence $ map (describeColumn meta) [1..columnCount]
+            allRight = not $ any (either (\x -> true) (\x -> false)) res
+            getRight (Right x) = x
+            if allRight
+                then return $ map getRight res
+                else return $ []
+        default :: Exception -> IO [SqlColDesc]
+        default e = do return []
+
+fetchRow :: ResultSet -> IO (Either Throwable [SqlValue])
+fetchRow rset =
+    catchAll unsafe
+    where
+        unsafe = do
+            ResultSet.next rset
+            meta        <- ResultSet.getMetaData rset
+            columnCount <- ResultSetMetaData.getColumnCount meta
+            columnTypes <- sequence $ map (ResultSetMetaData.getColumnType meta) [1..columnCount]
+            sequence $ [columnConverter rset idx ctype | (idx, ctype) <- (zip [1..columnCount] columnTypes)]

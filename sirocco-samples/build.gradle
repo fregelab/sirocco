@@ -1,0 +1,19 @@
+apply plugin: 'java'
+apply plugin: 'frege'
+apply plugin: 'application'
+
+repositories {
+    maven {
+        url  "http://dl.bintray.com/januslynd/maven"
+    }
+}
+
+dependencies {
+    compile project (':sirocco-core')
+    compile 'com.h2database:h2:1.4.187'
+    compile 'com.github.januslynd:chinook-core:0.1.0-beta-a3c03ee'
+}
+
+compileFrege.dependsOn 'compileJava'
+
+mainClassName = "songs.App"

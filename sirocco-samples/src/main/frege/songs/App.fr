@@ -1,0 +1,13 @@
+module songs.App where
+
+import chinook.Chinook
+import songs.init.Fixtures
+import songs.handler.Bands
+
+-- Exposed endpoints
+main _  = do
+    -- Execute fixtures
+    createBandTable
+    insertBands
+    -- List all available bands
+    get  "/bands"  findAllBands

@@ -1,0 +1,23 @@
+{--
+ This module handles common database operations such as:
+
+ * Create a connection
+ * Create a new statement
+
+-}
+module songs.db.Db where
+
+import sirocco.internal.JDBC
+import sirocco.internal.FDBC
+
+databaseURI = "jdbc:h2:~/test"
+
+--- Creates a new connection
+connection :: IO Connection
+connection = DriverManager.getConnection databaseURI "sa" ""
+
+---- Creates a new statement from the current connection
+createStatement :: IO Statement
+createStatement = do
+   conn    <- connection
+   Connection.createStatement conn

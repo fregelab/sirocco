@@ -1,0 +1,37 @@
+{--
+  This module has all Band related queries
+-}
+module songs.db.Bands where
+
+import sirocco.internal.JDBC
+import sirocco.internal.FDBC
+
+import songs.db.Db (createStatement)
+
+instance Show SqlValue where
+    show (SqlString s) = "String: " ++ s
+    show (SqlInt s)    = "Int: " ++ show s
+    show (SqlLong s)   = "Long: " ++ show s
+    show t = "Some value"
+
+--- Lists all available bands in database
+findAllBands :: IO [CatchAll [SqlValue]]
+findAllBands = do
+   stmt    <- createStatement
+   rs      <- Statement.executeQuery stmt "SELECT * FROM bands"
+   -- This should be refactored to something like `fetchRows rs`
+   takeWhileRight $ repeat $ fetchRow rs
+
+{--
+   When invoking the function `fetchRow` it only ask for one row of the
+   current ResultSet. Every call to fetchRow returns an IO Right _
+   while there are records, once the records have been consumed the
+   fetchRow call will return IO Left _ records.
+-}
+takeWhileRight :: [IO (Either Throwable a)] -> IO [(Either Throwable a)]
+takeWhileRight []     = return []
+takeWhileRight (x:xs) = do
+  y <- x
+  case y of
+      Right _ -> (y:) <$> (takeWhileRight xs)
+      Left  _ -> pure []

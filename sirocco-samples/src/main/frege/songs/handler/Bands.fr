@@ -1,0 +1,24 @@
+{--
+ This module handles requests and response for
+ Band resources.
+-}
+module songs.handler.Bands where
+
+import Data.JSON
+import chinook.Spark
+
+import songs.data.Bands as BandsModel
+
+{--
+ Reducing boiler plate code when converting
+ any instance to JSON
+-}
+renderJSON :: Band -> Maybe String
+renderJSON = Just . show . toJSON
+
+{--
+ List all available bands
+-}
+findAllBands :: Request -> Response -> IO (Maybe String)
+findAllBands = \req \res -> do
+  return $ renderJSON Band { name = "Whitesnake" }

@@ -1,0 +1,50 @@
+subprojects {
+
+    buildscript {
+        repositories {
+            mavenLocal()
+            jcenter()
+            maven { url "https://oss.sonatype.org/content/groups/public" }
+            mavenCentral()
+        }
+        dependencies {
+            classpath 'org.frege-lang:frege-gradle-plugin:0.4.1'
+            classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
+        }
+    }
+
+    repositories {
+        jcenter()
+        maven { url "https://oss.sonatype.org/content/groups/public" }
+    }
+}
+
+ext.metadata = [
+    group   : "com.github.januslynd",
+    version : "0.1.0-beta-",
+    desc: 'Sirocco is a Frege (http://frege-lang.org) library to access relational databases.'
+]
+
+ext.libraries = [
+    frege_core: 'org.frege-lang:frege:3.23.288-gaa3af0c',
+    frege_repl: "org.frege-lang:frege-repl-core:1.2.1-SNAPSHOT",
+    frege_nati: "org.frege-lang:frege-native-gen:1.3",
+
+    slf4j: 'org.slf4j:slf4j-api:1.7.12',
+    junit: 'junit:junit:4.12',
+    hamcrest: 'org.hamcrest:java-hamcrest:2.0.0.0',
+]
+
+ext.groups = [
+    compilation: [
+        libraries.frege_core,
+        libraries.frege_repl,
+        libraries.frege_nati,
+        libraries.slf4j
+    ],
+    testing: [
+        libraries.slf4j,
+        libraries.junit,
+        libraries.hamcrest,
+   ]
+]

@@ -1,0 +1,32 @@
+{--
+  This module handles how Band instances are created
+-}
+module songs.data.Bands where
+
+import Data.JSON
+import Data.List
+
+data Band = Band { name :: String }
+
+derive Show Band
+
+{--
+ Converts a Band to JSON representation
+-}
+instance ToJSON Band where
+  toJSON Band {name} =
+    Struct [
+      assoc "name" name
+    ]
+
+{--
+ Creates a Band from a JSON document
+-}
+instance FromJSON Band where
+  fromJSON v = case v of
+    -- PARSING OK
+    Struct s -> do
+      name <- field "name" s
+      return Band {name}
+    -- PARSING KO
+    _        ->  fail ("expected {\"name\" : ...}, found " ++ show v)
