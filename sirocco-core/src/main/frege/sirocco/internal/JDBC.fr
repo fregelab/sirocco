@@ -1,0 +1,1001 @@
+{--
+  This code has been copied from https://github.com/DellCliff/frege-dbc
+-}
+module sirocco.internal.JDBC where
+
+data CallableStatement = mutable native java.sql.CallableStatement where
+
+  native getBoolean :: CallableStatement -> String -> IO Bool throws SQLException
+                     | CallableStatement -> Int -> IO Bool throws SQLException
+
+  native getByte :: CallableStatement -> String -> IO Byte throws SQLException
+                  | CallableStatement -> Int -> IO Byte throws SQLException
+
+  native getDouble :: CallableStatement -> String -> IO Double throws SQLException
+                    | CallableStatement -> Int -> IO Double throws SQLException
+
+  native getFloat :: CallableStatement -> Int -> IO Float throws SQLException
+                   | CallableStatement -> String -> IO Float throws SQLException
+
+  native getInt :: CallableStatement -> String -> IO Int throws SQLException
+                 | CallableStatement -> Int -> IO Int throws SQLException
+
+  native getLong :: CallableStatement -> Int -> IO Long throws SQLException
+                  | CallableStatement -> String -> IO Long throws SQLException
+
+  native getNString :: CallableStatement -> String -> IO String throws SQLException
+                     | CallableStatement -> Int -> IO String throws SQLException
+
+  native getObject :: CallableStatement -> Int -> IO Object throws SQLException
+                    | CallableStatement -> String -> IO Object throws SQLException
+                    | CallableStatement -> String -> Class t -> IO t throws SQLException
+                    | CallableStatement -> Int -> Class t -> IO t throws SQLException
+
+  native getShort :: CallableStatement -> String -> IO Short throws SQLException
+                   | CallableStatement -> Int -> IO Short throws SQLException
+
+  native getString :: CallableStatement -> String -> IO String throws SQLException
+                    | CallableStatement -> Int -> IO String throws SQLException
+
+  native wasNull :: CallableStatement -> IO Bool throws SQLException
+
+data BigDecimal = pure native java.math.BigDecimal where
+
+  pure native zero "java.math.BigDecimal.ZERO" :: BigDecimal
+  pure native one "java.math.BigDecimal.ONE" :: BigDecimal
+  pure native ten "java.math.BigDecimal.TEN" :: BigDecimal
+  pure native round_up "java.math.BigDecimal.ROUND_UP" :: Int
+  pure native round_down "java.math.BigDecimal.ROUND_DOWN" :: Int
+  pure native round_ceiling "java.math.BigDecimal.ROUND_CEILING" :: Int
+  pure native round_floor "java.math.BigDecimal.ROUND_FLOOR" :: Int
+  pure native round_half_up "java.math.BigDecimal.ROUND_HALF_UP" :: Int
+  pure native round_half_down "java.math.BigDecimal.ROUND_HALF_DOWN" :: Int
+  pure native round_half_even "java.math.BigDecimal.ROUND_HALF_EVEN" :: Int
+  pure native round_unnecessary "java.math.BigDecimal.ROUND_UNNECESSARY" :: Int
+
+  pure native new :: Integer -> Int -> BigDecimal
+              | Integer -> BigDecimal
+              | Double -> BigDecimal
+              | Long -> BigDecimal
+              | Int -> BigDecimal
+              | String -> BigDecimal
+
+  pure native abs :: BigDecimal -> BigDecimal
+
+  pure native add :: BigDecimal -> BigDecimal -> BigDecimal
+
+  pure native byteValueExact :: BigDecimal -> Byte
+
+  pure native compareTo :: BigDecimal -> BigDecimal -> Int
+
+  pure native divide :: BigDecimal -> BigDecimal -> Int -> Int -> BigDecimal
+                      | BigDecimal -> BigDecimal -> BigDecimal
+                      | BigDecimal -> BigDecimal -> Int -> BigDecimal
+
+  pure native divideToIntegralValue :: BigDecimal -> BigDecimal -> BigDecimal
+
+  pure native doubleValue :: BigDecimal -> Double
+
+  pure native equals :: BigDecimal -> Object -> Bool
+
+  pure native floatValue :: BigDecimal -> Float
+
+  pure native hashCode :: BigDecimal -> Int
+
+  pure native intValue :: BigDecimal -> Int
+
+  pure native intValueExact :: BigDecimal -> Int
+
+  pure native longValue :: BigDecimal -> Long
+
+  pure native longValueExact :: BigDecimal -> Long
+
+  pure native max :: BigDecimal -> BigDecimal -> BigDecimal
+
+  pure native min :: BigDecimal -> BigDecimal -> BigDecimal
+
+  pure native movePointLeft :: BigDecimal -> Int -> BigDecimal
+
+  pure native movePointRight :: BigDecimal -> Int -> BigDecimal
+
+  pure native multiply :: BigDecimal -> BigDecimal -> BigDecimal
+
+  pure native negate :: BigDecimal -> BigDecimal
+
+  pure native plus :: BigDecimal -> BigDecimal
+
+  pure native pow :: BigDecimal -> Int -> BigDecimal
+
+  pure native precision :: BigDecimal -> Int
+
+  pure native remainder :: BigDecimal -> BigDecimal -> BigDecimal
+
+  pure native scale :: BigDecimal -> Int
+
+  pure native scaleByPowerOfTen :: BigDecimal -> Int -> BigDecimal
+
+  pure native setScale :: BigDecimal -> Int -> Int -> BigDecimal
+                        | BigDecimal -> Int -> BigDecimal
+
+  pure native shortValueExact :: BigDecimal -> Short
+
+  pure native signum :: BigDecimal -> Int
+
+  pure native stripTrailingZeros :: BigDecimal -> BigDecimal
+
+  pure native subtract :: BigDecimal -> BigDecimal -> BigDecimal
+
+  pure native toBigInteger :: BigDecimal -> Integer
+
+  pure native toBigIntegerExact :: BigDecimal -> Integer
+
+  pure native toEngineeringString :: BigDecimal -> String
+
+  pure native toPlainString :: BigDecimal -> String
+
+  pure native toString :: BigDecimal -> String
+
+  pure native ulp :: BigDecimal -> BigDecimal
+
+  pure native unscaledValue :: BigDecimal -> Integer
+
+  pure native valueOf "java.math.BigDecimal.valueOf" :: Double -> BigDecimal
+                                                      | Long -> Int -> BigDecimal
+                                                      | Long -> BigDecimal
+
+data Connection = mutable native java.sql.Connection where
+
+  pure native transaction_none "java.sql.Connection.TRANSACTION_NONE" :: Int
+  pure native transaction_read_uncommitted "java.sql.Connection.TRANSACTION_READ_UNCOMMITTED" :: Int
+  pure native transaction_read_committed "java.sql.Connection.TRANSACTION_READ_COMMITTED" :: Int
+  pure native transaction_repeatable_read "java.sql.Connection.TRANSACTION_REPEATABLE_READ" :: Int
+  pure native transaction_serializable "java.sql.Connection.TRANSACTION_SERIALIZABLE" :: Int
+
+  native clearWarnings :: Connection -> IO () throws SQLException
+
+  native close :: Connection -> IO () throws SQLException
+
+  native commit :: Connection -> IO () throws SQLException
+
+  native createStatement :: Connection -> Int -> Int -> Int -> IO Statement throws SQLException
+                          | Connection -> Int -> Int -> IO Statement throws SQLException
+                          | Connection -> IO Statement throws SQLException
+
+  native getAutoCommit :: Connection -> IO Bool throws SQLException
+
+  native getCatalog :: Connection -> IO String throws SQLException
+
+  native getClientInfo :: Connection -> String -> IO String throws SQLException
+
+  native getHoldability :: Connection -> IO Int throws SQLException
+
+  native getMetaData :: Connection -> IO DatabaseMetaData throws SQLException
+
+  native getNetworkTimeout :: Connection -> IO Int throws SQLException
+
+  native getSchema :: Connection -> IO String throws SQLException
+
+  native getTransactionIsolation :: Connection -> IO Int throws SQLException
+
+  native getWarnings :: Connection -> IO SQLWarning throws SQLException
+
+  native isClosed :: Connection -> IO Bool throws SQLException
+
+  native isReadOnly :: Connection -> IO Bool throws SQLException
+
+  native isValid :: Connection -> Int -> IO Bool throws SQLException
+
+  native nativeSQL :: Connection -> String -> IO String throws SQLException
+
+  native prepareCall :: Connection -> String -> Int -> Int -> Int -> IO CallableStatement throws SQLException
+                      | Connection -> String -> IO CallableStatement throws SQLException
+                      | Connection -> String -> Int -> Int -> IO CallableStatement throws SQLException
+
+  native prepareStatement :: Connection -> String -> IO PreparedStatement throws SQLException
+                           | Connection -> String -> Int -> Int -> IO PreparedStatement throws SQLException
+                           | Connection -> String -> Int -> Int -> Int -> IO PreparedStatement throws SQLException
+                           | Connection -> String -> Int -> IO PreparedStatement throws SQLException
+
+  native rollback :: Connection -> IO () throws SQLException
+
+  native setAutoCommit :: Connection -> Bool -> IO () throws SQLException
+
+  native setCatalog :: Connection -> String -> IO () throws SQLException
+
+  native setHoldability :: Connection -> Int -> IO () throws SQLException
+
+  native setReadOnly :: Connection -> Bool -> IO () throws SQLException
+
+  native setSchema :: Connection -> String -> IO () throws SQLException
+
+  native setTransactionIsolation :: Connection -> Int -> IO () throws SQLException
+
+data DatabaseMetaData = pure native java.sql.DatabaseMetaData where
+
+  pure native procedureresultunknown "java.sql.DatabaseMetaData.procedureResultUnknown" :: Int
+  pure native procedurenoresult "java.sql.DatabaseMetaData.procedureNoResult" :: Int
+  pure native procedurereturnsresult "java.sql.DatabaseMetaData.procedureReturnsResult" :: Int
+  pure native procedurecolumnunknown "java.sql.DatabaseMetaData.procedureColumnUnknown" :: Int
+  pure native procedurecolumnin "java.sql.DatabaseMetaData.procedureColumnIn" :: Int
+  pure native procedurecolumninout "java.sql.DatabaseMetaData.procedureColumnInOut" :: Int
+  pure native procedurecolumnout "java.sql.DatabaseMetaData.procedureColumnOut" :: Int
+  pure native procedurecolumnreturn "java.sql.DatabaseMetaData.procedureColumnReturn" :: Int
+  pure native procedurecolumnresult "java.sql.DatabaseMetaData.procedureColumnResult" :: Int
+  pure native procedurenonulls "java.sql.DatabaseMetaData.procedureNoNulls" :: Int
+  pure native procedurenullable "java.sql.DatabaseMetaData.procedureNullable" :: Int
+  pure native procedurenullableunknown "java.sql.DatabaseMetaData.procedureNullableUnknown" :: Int
+  pure native columnnonulls "java.sql.DatabaseMetaData.columnNoNulls" :: Int
+  pure native columnnullable "java.sql.DatabaseMetaData.columnNullable" :: Int
+  pure native columnnullableunknown "java.sql.DatabaseMetaData.columnNullableUnknown" :: Int
+  pure native bestrowtemporary "java.sql.DatabaseMetaData.bestRowTemporary" :: Int
+  pure native bestrowtransaction "java.sql.DatabaseMetaData.bestRowTransaction" :: Int
+  pure native bestrowsession "java.sql.DatabaseMetaData.bestRowSession" :: Int
+  pure native bestrowunknown "java.sql.DatabaseMetaData.bestRowUnknown" :: Int
+  pure native bestrownotpseudo "java.sql.DatabaseMetaData.bestRowNotPseudo" :: Int
+  pure native bestrowpseudo "java.sql.DatabaseMetaData.bestRowPseudo" :: Int
+  pure native versioncolumnunknown "java.sql.DatabaseMetaData.versionColumnUnknown" :: Int
+  pure native versioncolumnnotpseudo "java.sql.DatabaseMetaData.versionColumnNotPseudo" :: Int
+  pure native versioncolumnpseudo "java.sql.DatabaseMetaData.versionColumnPseudo" :: Int
+  pure native importedkeycascade "java.sql.DatabaseMetaData.importedKeyCascade" :: Int
+  pure native importedkeyrestrict "java.sql.DatabaseMetaData.importedKeyRestrict" :: Int
+  pure native importedkeysetnull "java.sql.DatabaseMetaData.importedKeySetNull" :: Int
+  pure native importedkeynoaction "java.sql.DatabaseMetaData.importedKeyNoAction" :: Int
+  pure native importedkeysetdefault "java.sql.DatabaseMetaData.importedKeySetDefault" :: Int
+  pure native importedkeyinitiallydeferred "java.sql.DatabaseMetaData.importedKeyInitiallyDeferred" :: Int
+  pure native importedkeyinitiallyimmediate "java.sql.DatabaseMetaData.importedKeyInitiallyImmediate" :: Int
+  pure native importedkeynotdeferrable "java.sql.DatabaseMetaData.importedKeyNotDeferrable" :: Int
+  pure native typenonulls "java.sql.DatabaseMetaData.typeNoNulls" :: Int
+  pure native typenullable "java.sql.DatabaseMetaData.typeNullable" :: Int
+  pure native typenullableunknown "java.sql.DatabaseMetaData.typeNullableUnknown" :: Int
+  pure native typeprednone "java.sql.DatabaseMetaData.typePredNone" :: Int
+  pure native typepredchar "java.sql.DatabaseMetaData.typePredChar" :: Int
+  pure native typepredbasic "java.sql.DatabaseMetaData.typePredBasic" :: Int
+  pure native typesearchable "java.sql.DatabaseMetaData.typeSearchable" :: Int
+  pure native tableindexstatistic "java.sql.DatabaseMetaData.tableIndexStatistic" :: Short
+  pure native tableindexclustered "java.sql.DatabaseMetaData.tableIndexClustered" :: Short
+  pure native tableindexhashed "java.sql.DatabaseMetaData.tableIndexHashed" :: Short
+  pure native tableindexother "java.sql.DatabaseMetaData.tableIndexOther" :: Short
+  pure native attributenonulls "java.sql.DatabaseMetaData.attributeNoNulls" :: Short
+  pure native attributenullable "java.sql.DatabaseMetaData.attributeNullable" :: Short
+  pure native attributenullableunknown "java.sql.DatabaseMetaData.attributeNullableUnknown" :: Short
+  pure native sqlstatexopen "java.sql.DatabaseMetaData.sqlStateXOpen" :: Int
+  pure native sqlstatesql "java.sql.DatabaseMetaData.sqlStateSQL" :: Int
+  pure native sqlstatesql99 "java.sql.DatabaseMetaData.sqlStateSQL99" :: Int
+  pure native functioncolumnunknown "java.sql.DatabaseMetaData.functionColumnUnknown" :: Int
+  pure native functioncolumnin "java.sql.DatabaseMetaData.functionColumnIn" :: Int
+  pure native functioncolumninout "java.sql.DatabaseMetaData.functionColumnInOut" :: Int
+  pure native functioncolumnout "java.sql.DatabaseMetaData.functionColumnOut" :: Int
+  pure native functionreturn "java.sql.DatabaseMetaData.functionReturn" :: Int
+  pure native functioncolumnresult "java.sql.DatabaseMetaData.functionColumnResult" :: Int
+  pure native functionnonulls "java.sql.DatabaseMetaData.functionNoNulls" :: Int
+  pure native functionnullable "java.sql.DatabaseMetaData.functionNullable" :: Int
+  pure native functionnullableunknown "java.sql.DatabaseMetaData.functionNullableUnknown" :: Int
+  pure native functionresultunknown "java.sql.DatabaseMetaData.functionResultUnknown" :: Int
+  pure native functionnotable "java.sql.DatabaseMetaData.functionNoTable" :: Int
+  pure native functionreturnstable "java.sql.DatabaseMetaData.functionReturnsTable" :: Int
+
+  native allProceduresAreCallable :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native allTablesAreSelectable :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native autoCommitFailureClosesAllResultSets :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native dataDefinitionCausesTransactionCommit :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native dataDefinitionIgnoredInTransactions :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native deletesAreDetected :: DatabaseMetaData -> Int -> IO Bool throws SQLException
+
+  native doesMaxRowSizeIncludeBlobs :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native generatedKeyAlwaysReturned :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native getAttributes :: DatabaseMetaData -> String -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getBestRowIdentifier :: DatabaseMetaData -> String -> String -> String -> Int -> Bool -> IO ResultSet throws SQLException
+
+  native getCatalogSeparator :: DatabaseMetaData -> IO String throws SQLException
+
+  native getCatalogTerm :: DatabaseMetaData -> IO String throws SQLException
+
+  native getCatalogs :: DatabaseMetaData -> IO ResultSet throws SQLException
+
+  native getClientInfoProperties :: DatabaseMetaData -> IO ResultSet throws SQLException
+
+  native getColumnPrivileges :: DatabaseMetaData -> String -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getColumns :: DatabaseMetaData -> String -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getCrossReference :: DatabaseMetaData -> String -> String -> String -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getDatabaseMajorVersion :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getDatabaseMinorVersion :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getDatabaseProductName :: DatabaseMetaData -> IO String throws SQLException
+
+  native getDatabaseProductVersion :: DatabaseMetaData -> IO String throws SQLException
+
+  native getDefaultTransactionIsolation :: DatabaseMetaData -> IO Int throws SQLException
+
+  pure native getDriverMajorVersion :: DatabaseMetaData -> Int
+
+  pure native getDriverMinorVersion :: DatabaseMetaData -> Int
+
+  native getDriverName :: DatabaseMetaData -> IO String throws SQLException
+
+  native getDriverVersion :: DatabaseMetaData -> IO String throws SQLException
+
+  native getExportedKeys :: DatabaseMetaData -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getExtraNameCharacters :: DatabaseMetaData -> IO String throws SQLException
+
+  native getFunctionColumns :: DatabaseMetaData -> String -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getFunctions :: DatabaseMetaData -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getIdentifierQuoteString :: DatabaseMetaData -> IO String throws SQLException
+
+  native getImportedKeys :: DatabaseMetaData -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getIndexInfo :: DatabaseMetaData -> String -> String -> String -> Bool -> Bool -> IO ResultSet throws SQLException
+
+  native getJDBCMajorVersion :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getJDBCMinorVersion :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxBinaryLiteralLength :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxCatalogNameLength :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxCharLiteralLength :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxColumnNameLength :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxColumnsInGroupBy :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxColumnsInIndex :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxColumnsInOrderBy :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxColumnsInSelect :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxColumnsInTable :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxConnections :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxCursorNameLength :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxIndexLength :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxLogicalLobSize :: DatabaseMetaData -> IO Long throws SQLException
+
+  native getMaxProcedureNameLength :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxRowSize :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxSchemaNameLength :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxStatementLength :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxStatements :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxTableNameLength :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxTablesInSelect :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getMaxUserNameLength :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getNumericFunctions :: DatabaseMetaData -> IO String throws SQLException
+
+  native getPrimaryKeys :: DatabaseMetaData -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getProcedureColumns :: DatabaseMetaData -> String -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getProcedureTerm :: DatabaseMetaData -> IO String throws SQLException
+
+  native getProcedures :: DatabaseMetaData -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getPseudoColumns :: DatabaseMetaData -> String -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getResultSetHoldability :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getSQLKeywords :: DatabaseMetaData -> IO String throws SQLException
+
+  native getSQLStateType :: DatabaseMetaData -> IO Int throws SQLException
+
+  native getSchemaTerm :: DatabaseMetaData -> IO String throws SQLException
+
+  native getSchemas :: DatabaseMetaData -> IO ResultSet throws SQLException
+                                      | DatabaseMetaData -> String -> String -> IO ResultSet throws SQLException
+
+  native getSearchStringEscape :: DatabaseMetaData -> IO String throws SQLException
+
+  native getStringFunctions :: DatabaseMetaData -> IO String throws SQLException
+
+  native getSuperTables :: DatabaseMetaData -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getSuperTypes :: DatabaseMetaData -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getSystemFunctions :: DatabaseMetaData -> IO String throws SQLException
+
+  native getTablePrivileges :: DatabaseMetaData -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native getTableTypes :: DatabaseMetaData -> IO ResultSet throws SQLException
+
+  native getTimeDateFunctions :: DatabaseMetaData -> IO String throws SQLException
+
+  native getTypeInfo :: DatabaseMetaData -> IO ResultSet throws SQLException
+
+  native getURL :: DatabaseMetaData -> IO String throws SQLException
+
+  native getUserName :: DatabaseMetaData -> IO String throws SQLException
+
+  native getVersionColumns :: DatabaseMetaData -> String -> String -> String -> IO ResultSet throws SQLException
+
+  native insertsAreDetected :: DatabaseMetaData -> Int -> IO Bool throws SQLException
+
+  native isCatalogAtStart :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native isReadOnly :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native locatorsUpdateCopy :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native nullPlusNonNullIsNull :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native nullsAreSortedAtEnd :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native nullsAreSortedAtStart :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native nullsAreSortedHigh :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native nullsAreSortedLow :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native othersDeletesAreVisible :: DatabaseMetaData -> Int -> IO Bool throws SQLException
+
+  native othersInsertsAreVisible :: DatabaseMetaData -> Int -> IO Bool throws SQLException
+
+  native othersUpdatesAreVisible :: DatabaseMetaData -> Int -> IO Bool throws SQLException
+
+  native ownDeletesAreVisible :: DatabaseMetaData -> Int -> IO Bool throws SQLException
+
+  native ownInsertsAreVisible :: DatabaseMetaData -> Int -> IO Bool throws SQLException
+
+  native ownUpdatesAreVisible :: DatabaseMetaData -> Int -> IO Bool throws SQLException
+
+  native storesLowerCaseIdentifiers :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native storesLowerCaseQuotedIdentifiers :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native storesMixedCaseIdentifiers :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native storesMixedCaseQuotedIdentifiers :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native storesUpperCaseIdentifiers :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native storesUpperCaseQuotedIdentifiers :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsANSI92EntryLevelSQL :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsANSI92FullSQL :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsANSI92IntermediateSQL :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsAlterTableWithAddColumn :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsAlterTableWithDropColumn :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsBatchUpdates :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsCatalogsInDataManipulation :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsCatalogsInIndexDefinitions :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsCatalogsInPrivilegeDefinitions :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsCatalogsInProcedureCalls :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsCatalogsInTableDefinitions :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsColumnAliasing :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsConvert :: DatabaseMetaData -> IO Bool throws SQLException
+                          | DatabaseMetaData -> Int -> Int -> IO Bool throws SQLException
+
+  native supportsCoreSQLGrammar :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsCorrelatedSubqueries :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsDataDefinitionAndDataManipulationTransactions :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsDataManipulationTransactionsOnly :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsDifferentTableCorrelationNames :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsExpressionsInOrderBy :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsExtendedSQLGrammar :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsFullOuterJoins :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsGetGeneratedKeys :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsGroupBy :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsGroupByBeyondSelect :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsGroupByUnrelated :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsIntegrityEnhancementFacility :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsLikeEscapeClause :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsLimitedOuterJoins :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsMinimumSQLGrammar :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsMixedCaseIdentifiers :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsMixedCaseQuotedIdentifiers :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsMultipleOpenResults :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsMultipleResultSets :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsMultipleTransactions :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsNamedParameters :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsNonNullableColumns :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsOpenCursorsAcrossCommit :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsOpenCursorsAcrossRollback :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsOpenStatementsAcrossCommit :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsOpenStatementsAcrossRollback :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsOrderByUnrelated :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsOuterJoins :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsPositionedDelete :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsPositionedUpdate :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsRefCursors :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsResultSetConcurrency :: DatabaseMetaData -> Int -> Int -> IO Bool throws SQLException
+
+  native supportsResultSetHoldability :: DatabaseMetaData -> Int -> IO Bool throws SQLException
+
+  native supportsResultSetType :: DatabaseMetaData -> Int -> IO Bool throws SQLException
+
+  native supportsSavepoints :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsSchemasInDataManipulation :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsSchemasInIndexDefinitions :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsSchemasInPrivilegeDefinitions :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsSchemasInProcedureCalls :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsSchemasInTableDefinitions :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsSelectForUpdate :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsStatementPooling :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsStoredFunctionsUsingCallSyntax :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsStoredProcedures :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsSubqueriesInComparisons :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsSubqueriesInExists :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsSubqueriesInIns :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsSubqueriesInQuantifieds :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsTableCorrelationNames :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsTransactionIsolationLevel :: DatabaseMetaData -> Int -> IO Bool throws SQLException
+
+  native supportsTransactions :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsUnion :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native supportsUnionAll :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native updatesAreDetected :: DatabaseMetaData -> Int -> IO Bool throws SQLException
+
+  native usesLocalFilePerTable :: DatabaseMetaData -> IO Bool throws SQLException
+
+  native usesLocalFiles :: DatabaseMetaData -> IO Bool throws SQLException
+
+data Date = pure native java.sql.Date where
+
+  pure native new :: Long -> Date
+
+  pure native toString :: Date -> String
+
+  pure native valueOf "java.sql.Date.valueOf" :: String -> Date
+
+data DriverManager = mutable native java.sql.DriverManager where
+
+  native getConnection "java.sql.DriverManager.getConnection" :: String -> IO Connection throws SQLException
+                                                               | String -> String -> String -> IO Connection throws SQLException
+
+data ParameterMetaData = pure native java.sql.ParameterMetaData where
+
+  pure native parameternonulls "java.sql.ParameterMetaData.parameterNoNulls" :: Int
+  pure native parameternullable "java.sql.ParameterMetaData.parameterNullable" :: Int
+  pure native parameternullableunknown "java.sql.ParameterMetaData.parameterNullableUnknown" :: Int
+  pure native parametermodeunknown "java.sql.ParameterMetaData.parameterModeUnknown" :: Int
+  pure native parametermodein "java.sql.ParameterMetaData.parameterModeIn" :: Int
+  pure native parametermodeinout "java.sql.ParameterMetaData.parameterModeInOut" :: Int
+  pure native parametermodeout "java.sql.ParameterMetaData.parameterModeOut" :: Int
+
+  native getParameterClassName :: ParameterMetaData -> Int -> IO String throws SQLException
+
+  native getParameterCount :: ParameterMetaData -> IO Int throws SQLException
+
+  native getParameterMode :: ParameterMetaData -> Int -> IO Int throws SQLException
+
+  native getParameterType :: ParameterMetaData -> Int -> IO Int throws SQLException
+
+  native getParameterTypeName :: ParameterMetaData -> Int -> IO String throws SQLException
+
+  native getPrecision :: ParameterMetaData -> Int -> IO Int throws SQLException
+
+  native getScale :: ParameterMetaData -> Int -> IO Int throws SQLException
+
+  native isNullable :: ParameterMetaData -> Int -> IO Int throws SQLException
+
+  native isSigned :: ParameterMetaData -> Int -> IO Bool throws SQLException
+
+data PreparedStatement = pure native java.sql.PreparedStatement where
+
+  native addBatch :: PreparedStatement -> IO () throws SQLException
+
+  native clearParameters :: PreparedStatement -> IO () throws SQLException
+
+  native execute :: PreparedStatement -> IO Bool throws SQLException
+
+  native executeLargeUpdate :: PreparedStatement -> IO Long throws SQLException
+
+  native executeQuery :: PreparedStatement -> IO ResultSet throws SQLException
+
+  native executeUpdate :: PreparedStatement -> IO Int throws SQLException
+
+  native getMetaData :: PreparedStatement -> IO ResultSetMetaData throws SQLException
+
+  native getParameterMetaData :: PreparedStatement -> IO ParameterMetaData throws SQLException
+
+  native setBoolean :: PreparedStatement -> Int -> Bool -> IO () throws SQLException
+
+  native setByte :: PreparedStatement -> Int -> Byte -> IO () throws SQLException
+
+  native setDouble :: PreparedStatement -> Int -> Double -> IO () throws SQLException
+
+  native setFloat :: PreparedStatement -> Int -> Float -> IO () throws SQLException
+
+  native setInt :: PreparedStatement -> Int -> Int -> IO () throws SQLException
+
+  native setLong :: PreparedStatement -> Int -> Long -> IO () throws SQLException
+
+  native setNString :: PreparedStatement -> Int -> String -> IO () throws SQLException
+
+  native setNull :: PreparedStatement -> Int -> Int -> IO () throws SQLException
+                  | PreparedStatement -> Int -> Int -> String -> IO () throws SQLException
+
+  native setObject :: PreparedStatement -> Int -> Object -> Int -> IO () throws SQLException
+                    | PreparedStatement -> Int -> Object -> IO () throws SQLException
+                    | PreparedStatement -> Int -> Object -> Int -> Int -> IO () throws SQLException
+
+  native setShort :: PreparedStatement -> Int -> Short -> IO () throws SQLException
+
+  native setString :: PreparedStatement -> Int -> String -> IO () throws SQLException
+
+data ResultSet = mutable native java.sql.ResultSet where
+
+  pure native fetch_forward "java.sql.ResultSet.FETCH_FORWARD" :: Int
+  pure native fetch_reverse "java.sql.ResultSet.FETCH_REVERSE" :: Int
+  pure native fetch_unknown "java.sql.ResultSet.FETCH_UNKNOWN" :: Int
+  pure native type_forward_only "java.sql.ResultSet.TYPE_FORWARD_ONLY" :: Int
+  pure native type_scroll_insensitive "java.sql.ResultSet.TYPE_SCROLL_INSENSITIVE" :: Int
+  pure native type_scroll_sensitive "java.sql.ResultSet.TYPE_SCROLL_SENSITIVE" :: Int
+  pure native concur_read_only "java.sql.ResultSet.CONCUR_READ_ONLY" :: Int
+  pure native concur_updatable "java.sql.ResultSet.CONCUR_UPDATABLE" :: Int
+  pure native hold_cursors_over_commit "java.sql.ResultSet.HOLD_CURSORS_OVER_COMMIT" :: Int
+  pure native close_cursors_at_commit "java.sql.ResultSet.CLOSE_CURSORS_AT_COMMIT" :: Int
+
+  native close :: ResultSet -> IO () throws SQLException
+
+  native getBigDecimal :: ResultSet -> Int -> IO BigDecimal throws SQLException
+                        | ResultSet -> String -> IO BigDecimal throws SQLException
+
+  native getBoolean :: ResultSet -> Int -> IO Bool throws SQLException
+                     | ResultSet -> String -> IO Bool throws SQLException
+
+  native getByte :: ResultSet -> String -> IO Byte throws SQLException
+                  | ResultSet -> Int -> IO Byte throws SQLException
+
+  native getBytes :: ResultSet -> Int -> IO (ArrayOf RealWorld Byte) throws SQLException
+                   | ResultSet -> String -> IO (ArrayOf RealWorld Byte) throws SQLException
+
+  native getDate :: ResultSet -> String -> IO Date throws SQLException
+                  | ResultSet -> Int -> IO Date throws SQLException
+
+  native getDouble :: ResultSet -> String -> IO Double throws SQLException
+                    | ResultSet -> Int -> IO Double throws SQLException
+
+  native getFetchDirection :: ResultSet -> IO Int throws SQLException
+
+  native getFetchSize :: ResultSet -> IO Int throws SQLException
+
+  native getFloat :: ResultSet -> String -> IO Float throws SQLException
+                   | ResultSet -> Int -> IO Float throws SQLException
+
+  native getHoldability :: ResultSet -> IO Int throws SQLException
+
+  native getInt :: ResultSet -> Int -> IO Int throws SQLException
+                 | ResultSet -> String -> IO Int throws SQLException
+
+  native getLong :: ResultSet -> String -> IO Long throws SQLException
+                  | ResultSet -> Int -> IO Long throws SQLException
+
+  native getMetaData :: ResultSet -> IO ResultSetMetaData throws SQLException
+
+  native getNString :: ResultSet -> String -> IO String throws SQLException
+                     | ResultSet -> Int -> IO String throws SQLException
+
+  native getObject :: ResultSet -> String -> IO Object throws SQLException
+                    | ResultSet -> Int -> IO Object throws SQLException
+                    | ResultSet -> Int -> Class t -> IO t throws SQLException
+                    | ResultSet -> String -> Class t -> IO t throws SQLException
+
+  native getRow :: ResultSet -> IO Int throws SQLException
+
+  native getShort :: ResultSet -> Int -> IO Short throws SQLException
+                   | ResultSet -> String -> IO Short throws SQLException
+
+  native getString :: ResultSet -> Int -> IO String throws SQLException
+                                | ResultSet -> String -> IO String throws SQLException
+
+  native getTime :: ResultSet -> String -> IO Time throws SQLException
+                  | ResultSet -> Int -> IO Time throws SQLException
+
+  native getTimestamp :: ResultSet -> Int -> IO Timestamp throws SQLException
+                       | ResultSet -> String -> IO Timestamp throws SQLException
+
+  native getType :: ResultSet -> IO Int throws SQLException
+
+  native getWarnings :: ResultSet -> IO SQLWarning throws SQLException
+
+  native isAfterLast :: ResultSet -> IO Bool throws SQLException
+
+  native isBeforeFirst :: ResultSet -> IO Bool throws SQLException
+
+  native isClosed :: ResultSet -> IO Bool throws SQLException
+
+  native isFirst :: ResultSet -> IO Bool throws SQLException
+
+  native isLast :: ResultSet -> IO Bool throws SQLException
+
+  native next :: ResultSet -> IO Bool throws SQLException
+
+  native relative :: ResultSet -> Int -> IO Bool throws SQLException
+
+  native rowDeleted :: ResultSet -> IO Bool throws SQLException
+
+  native rowInserted :: ResultSet -> IO Bool throws SQLException
+
+  native rowUpdated :: ResultSet -> IO Bool throws SQLException
+
+  native wasNull :: ResultSet -> IO Bool throws SQLException
+
+data ResultSetMetaData = mutable native java.sql.ResultSetMetaData where
+
+  pure native columnnonulls "java.sql.ResultSetMetaData.columnNoNulls" :: Int
+  pure native columnnullable "java.sql.ResultSetMetaData.columnNullable" :: Int
+  pure native columnnullableunknown "java.sql.ResultSetMetaData.columnNullableUnknown" :: Int
+
+  native getCatalogName :: ResultSetMetaData -> Int -> IO String throws SQLException
+
+  native getColumnClassName :: ResultSetMetaData -> Int -> IO String throws SQLException
+
+  native getColumnCount :: ResultSetMetaData -> IO Int throws SQLException
+
+  native getColumnDisplaySize :: ResultSetMetaData -> Int -> IO Int throws SQLException
+
+  native getColumnLabel :: ResultSetMetaData -> Int -> IO String throws SQLException
+
+  native getColumnName :: ResultSetMetaData -> Int -> IO String throws SQLException
+
+  native getColumnType :: ResultSetMetaData -> Int -> IO Int throws SQLException
+
+  native getColumnTypeName :: ResultSetMetaData -> Int -> IO String throws SQLException
+
+  native getPrecision :: ResultSetMetaData -> Int -> IO Int throws SQLException
+
+  native getScale :: ResultSetMetaData -> Int -> IO Int throws SQLException
+
+  native getSchemaName :: ResultSetMetaData -> Int -> IO String throws SQLException
+
+  native getTableName :: ResultSetMetaData -> Int -> IO String throws SQLException
+
+  native isAutoIncrement :: ResultSetMetaData -> Int -> IO Bool throws SQLException
+
+  native isCaseSensitive :: ResultSetMetaData -> Int -> IO Bool throws SQLException
+
+  native isCurrency :: ResultSetMetaData -> Int -> IO Bool throws SQLException
+
+  native isDefinitelyWritable :: ResultSetMetaData -> Int -> IO Bool throws SQLException
+
+  native isNullable :: ResultSetMetaData -> Int -> IO Int throws SQLException
+
+  native isReadOnly :: ResultSetMetaData -> Int -> IO Bool throws SQLException
+
+  native isSearchable :: ResultSetMetaData -> Int -> IO Bool throws SQLException
+
+  native isSigned :: ResultSetMetaData -> Int -> IO Bool throws SQLException
+
+  native isWritable :: ResultSetMetaData -> Int -> IO Bool throws SQLException
+
+data SQLException = mutable native java.sql.SQLException
+
+derive Exceptional SQLException
+
+data SQLWarning = mutable native java.sql.SQLWarning
+
+derive Exceptional SQLWarning
+
+data Statement = mutable native java.sql.Statement where
+
+  pure native close_current_result "java.sql.Statement.CLOSE_CURRENT_RESULT" :: Int
+  pure native keep_current_result "java.sql.Statement.KEEP_CURRENT_RESULT" :: Int
+  pure native close_all_results "java.sql.Statement.CLOSE_ALL_RESULTS" :: Int
+  pure native success_no_info "java.sql.Statement.SUCCESS_NO_INFO" :: Int
+  pure native execute_failed "java.sql.Statement.EXECUTE_FAILED" :: Int
+  pure native return_generated_keys "java.sql.Statement.RETURN_GENERATED_KEYS" :: Int
+  pure native no_generated_keys "java.sql.Statement.NO_GENERATED_KEYS" :: Int
+
+  native addBatch :: Statement -> String -> IO () throws SQLException
+
+  native cancel :: Statement -> IO () throws SQLException
+
+  native clearBatch :: Statement -> IO () throws SQLException
+
+  native clearWarnings :: Statement -> IO () throws SQLException
+
+  native close :: Statement -> IO () throws SQLException
+
+  native closeOnCompletion :: Statement -> IO () throws SQLException
+
+  native execute :: Statement -> String -> Int -> IO Bool throws SQLException
+                               |Statement -> String -> IO Bool throws SQLException
+
+  native executeQuery :: Statement -> String -> IO ResultSet throws SQLException
+
+  native executeUpdate :: Statement -> String -> Int -> IO Int throws SQLException
+                                          | Statement -> String -> IO Int throws SQLException
+
+  native getFetchDirection :: Statement -> IO Int throws SQLException
+
+  native getFetchSize :: Statement -> IO Int throws SQLException
+
+  native getGeneratedKeys :: Statement -> IO ResultSet throws SQLException
+
+  native getLargeMaxRows :: Statement -> IO Long throws SQLException
+
+  native getLargeUpdateCount :: Statement -> IO Long throws SQLException
+
+  native getMaxFieldSize :: Statement -> IO Int throws SQLException
+
+  native getMaxRows :: Statement -> IO Int throws SQLException
+
+  native getMoreResults :: Statement -> Int -> IO Bool throws SQLException
+                                            | Statement -> IO Bool throws SQLException
+
+  native getQueryTimeout :: Statement -> IO Int throws SQLException
+
+  native getResultSet :: Statement -> IO ResultSet throws SQLException
+
+  native getResultSetConcurrency :: Statement -> IO Int throws SQLException
+
+  native getResultSetHoldability :: Statement -> IO Int throws SQLException
+
+  native getResultSetType :: Statement -> IO Int throws SQLException
+
+  native getUpdateCount :: Statement -> IO Int throws SQLException
+
+  native getWarnings :: Statement -> IO SQLWarning throws SQLException
+
+  native isCloseOnCompletion :: Statement -> IO Bool throws SQLException
+
+  native isClosed :: Statement -> IO Bool throws SQLException
+
+  native isPoolable :: Statement -> IO Bool throws SQLException
+
+data Time = pure native java.sql.Time where
+
+  pure native new :: Long -> Time
+
+  pure native toString :: Time -> String
+
+  pure native valueOf "java.sql.Time.valueOf" :: String -> Time
+
+data Timestamp = pure native java.sql.Timestamp where
+
+  pure native new :: Long -> Timestamp
+
+  pure native after :: Timestamp -> Timestamp -> Bool
+
+  pure native before :: Timestamp -> Timestamp -> Bool
+
+  pure native compareTo :: Timestamp -> Timestamp -> Int
+
+  pure native equals :: Timestamp -> Timestamp -> Bool
+                      | Timestamp -> Object -> Bool
+
+  pure native getNanos :: Timestamp -> Int
+
+  pure native getTime :: Timestamp -> Long
+
+  pure native hashCode :: Timestamp -> Int
+
+  pure native toString :: Timestamp -> String
+
+  pure native valueOf "java.sql.Timestamp.valueOf" :: String -> Timestamp
+
+data Types = pure native java.sql.Types where
+
+  pure native bit "java.sql.Types.BIT" :: Int
+  pure native tinyint "java.sql.Types.TINYINT" :: Int
+  pure native smallint "java.sql.Types.SMALLINT" :: Int
+  pure native integer "java.sql.Types.INTEGER" :: Int
+  pure native bigint "java.sql.Types.BIGINT" :: Int
+  pure native float "java.sql.Types.FLOAT" :: Int
+  pure native real "java.sql.Types.REAL" :: Int
+  pure native double "java.sql.Types.DOUBLE" :: Int
+  pure native numeric "java.sql.Types.NUMERIC" :: Int
+  pure native decimal "java.sql.Types.DECIMAL" :: Int
+  pure native char "java.sql.Types.CHAR" :: Int
+  pure native varchar "java.sql.Types.VARCHAR" :: Int
+  pure native longvarchar "java.sql.Types.LONGVARCHAR" :: Int
+  pure native date "java.sql.Types.DATE" :: Int
+  pure native time "java.sql.Types.TIME" :: Int
+  pure native timestamp "java.sql.Types.TIMESTAMP" :: Int
+  pure native binary "java.sql.Types.BINARY" :: Int
+  pure native varbinary "java.sql.Types.VARBINARY" :: Int
+  pure native longvarbinary "java.sql.Types.LONGVARBINARY" :: Int
+  pure native null "java.sql.Types.NULL" :: Int
+  pure native other "java.sql.Types.OTHER" :: Int
+  pure native java_object "java.sql.Types.JAVA_OBJECT" :: Int
+  pure native distinct "java.sql.Types.DISTINCT" :: Int
+  pure native struct "java.sql.Types.STRUCT" :: Int
+  pure native array "java.sql.Types.ARRAY" :: Int
+  pure native blob "java.sql.Types.BLOB" :: Int
+  pure native clob "java.sql.Types.CLOB" :: Int
+  pure native ref "java.sql.Types.REF" :: Int
+  pure native datalink "java.sql.Types.DATALINK" :: Int
+  pure native boolean "java.sql.Types.BOOLEAN" :: Int
+  pure native rowid "java.sql.Types.ROWID" :: Int
+  pure native nchar "java.sql.Types.NCHAR" :: Int
+  pure native nvarchar "java.sql.Types.NVARCHAR" :: Int
+  pure native longnvarchar "java.sql.Types.LONGNVARCHAR" :: Int
+  pure native nclob "java.sql.Types.NCLOB" :: Int
+  pure native sqlxml "java.sql.Types.SQLXML" :: Int
+  pure native ref_cursor "java.sql.Types.REF_CURSOR" :: Int
+  pure native time_with_timezone "java.sql.Types.TIME_WITH_TIMEZONE" :: Int
+  pure native timestamp_with_timezone "java.sql.Types.TIMESTAMP_WITH_TIMEZONE" :: Int
+
+data Blob = mutable native java.sql.Blob where
+
+  native getBytes :: Blob -> Long -> Int -> IO (ArrayOf RealWorld Byte) throws SQLException
+
+  native length :: Blob -> IO Long throws SQLException

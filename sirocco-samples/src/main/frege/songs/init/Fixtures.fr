@@ -1,0 +1,27 @@
+{--
+  This module loads a basic set of data to start playing
+  with the application
+-}
+module songs.init.Fixtures where
+
+import sirocco.internal.JDBC
+import sirocco.internal.FDBC
+
+import songs.db.Db (createStatement)
+
+--- Creates the Bands database
+createBandTable :: IO ()
+createBandTable = do
+  stmt    <- createStatement
+  records <- Statement.execute stmt "CREATE TABLE bands (id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, name TEXT NOT NULL)"
+  println $ "Table bands created"
+
+--- Inserts some bands to populate the database
+insertBands :: IO ()
+insertBands = do
+  stmt <- createStatement
+  _ <- Statement.execute stmt "INSERT INTO bands (name) values ('Whitesnake')"
+  _ <- Statement.execute stmt "INSERT INTO bands (name) values ('Iron Maiden')"
+  _ <- Statement.execute stmt "INSERT INTO bands (name) values ('Metallica')"
+  _ <- Statement.execute stmt "INSERT INTO bands (name) values ('Halloween')"
+  println $ "List of bands inserted"
