@@ -7,6 +7,7 @@ import sirocco.internal.JDBC
 import sirocco.internal.FDBC
 
 import songs.db.Db (createStatement)
+import songs.data.Bands as BandsModel
 
 instance Show SqlValue where
     show (SqlString s) = "String: " ++ s
@@ -15,12 +16,19 @@ instance Show SqlValue where
     show t = "Some value"
 
 --- Lists all available bands in database
-findAllBands :: IO [CatchAll [SqlValue]]
+findAllBands :: IO (CatchAll [Band])
 findAllBands = do
    stmt    <- createStatement
    rs      <- Statement.executeQuery stmt "SELECT * FROM bands"
    -- This should be refactored to something like `fetchRows rs`
-   takeWhileRight $ repeat $ fetchRow rs
+   rowToBands $ takeWhileRight $ repeat $ fetchRow rs
+
+rowToBands :: IO [CatchAll [SqlValue]] -> IO (CatchAll [Band])
+rowToBands xs = fmap (fmap (fmap toBand)) $ fmap sequence xs
+
+toBand :: [SqlValue] -> Band
+toBand ((SqlLong id):(SqlString name):[]) = Band { id = id, name = name}
+toBand _ = Band { id = 0, name = "john.doe" }
 
 {--
    When invoking the function `fetchRow` it only ask for one row of the
@@ -28,10 +36,10 @@ findAllBands = do
    while there are records, once the records have been consumed the
    fetchRow call will return IO Left _ records.
 -}
-takeWhileRight :: [IO (Either Throwable a)] -> IO [(Either Throwable a)]
-takeWhileRight []     = return []
+takeWhileRight :: [IO (CatchAll a)] -> IO [(CatchAll a)]
 takeWhileRight (x:xs) = do
   y <- x
   case y of
       Right _ -> (y:) <$> (takeWhileRight xs)
       Left  _ -> pure []
+takeWhileRight []     = return []
