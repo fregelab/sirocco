@@ -21,4 +21,4 @@ renderJSON = Just . show . toJSON
 -}
 findAllBands :: Request -> Response -> IO (Maybe String)
 findAllBands = \req \res -> do
-  return $ renderJSON Band { name = "Whitesnake" }
+  return $ renderJSON Band { id = 1, name = "Whitesnake" }

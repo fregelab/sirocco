@@ -6,7 +6,8 @@ module songs.data.Bands where
 import Data.JSON
 import Data.List
 
-data Band = Band { name :: String }
+data Band = Band { id :: Long,
+                   name :: String }
 
 derive Show Band
 
@@ -14,8 +15,9 @@ derive Show Band
  Converts a Band to JSON representation
 -}
 instance ToJSON Band where
-  toJSON Band {name} =
+  toJSON Band {id, name} =
     Struct [
+      assoc "id"   id,
       assoc "name" name
     ]
 
@@ -26,7 +28,8 @@ instance FromJSON Band where
   fromJSON v = case v of
     -- PARSING OK
     Struct s -> do
+      id   <- field "id"   s
       name <- field "name" s
-      return Band {name}
+      return Band {id, name}
     -- PARSING KO
     _        ->  fail ("expected {\"name\" : ...}, found " ++ show v)
