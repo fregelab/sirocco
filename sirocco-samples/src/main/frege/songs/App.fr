@@ -4,10 +4,11 @@ import chinook.Chinook
 import songs.init.Fixtures
 import songs.handler.Bands
 
--- Exposed endpoints
+-- Application entry point
 main _  = do
     -- Execute fixtures
-    createBandTable
-    insertBands
-    -- List all available bands
-    get  "/bands"  list
+    createDrop
+    loadFixtures
+    -- Endpoints
+    get  "/bands"     list -- all bands
+    get  "/bands/:id" byId -- bands by id

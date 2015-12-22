@@ -9,16 +9,28 @@ import sirocco.internal.FDBC
 
 import songs.db.Db (createStatement)
 
---- Creates the Bands database
+--- Drops the Bands table
+dropBandTable :: IO ()
+dropBandTable = do
+  stmt    <- createStatement
+  records <- Statement.execute stmt "DROP TABLE bands"
+  println $ "Table bands deleted"
+
+--- Creates the Bands table
 createBandTable :: IO ()
 createBandTable = do
   stmt    <- createStatement
   records <- Statement.execute stmt "CREATE TABLE bands (id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, name TEXT NOT NULL)"
   println $ "Table bands created"
 
+createDrop :: IO ()
+createDrop = do
+  dropBandTable
+  createBandTable
+
 --- Inserts some bands to populate the database
-insertBands :: IO ()
-insertBands = do
+loadFixtures :: IO ()
+loadFixtures = do
   stmt <- createStatement
   _ <- Statement.execute stmt "INSERT INTO bands (name) values ('Whitesnake')"
   _ <- Statement.execute stmt "INSERT INTO bands (name) values ('Iron Maiden')"

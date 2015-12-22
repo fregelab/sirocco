@@ -10,8 +10,15 @@ import songs.db.Db
 import songs.data.Bands as Model
 
 --- Lists all available bands in database
-findAllBands :: IO  [Model.Band]
-findAllBands = mapRowsTo (query "SELECT * FROM bands") toBand
+findAll :: IO  [Model.Band]
+findAll = mapRowsTo (query "SELECT * FROM bands") toBand
+
+--- Finds a specific band by id
+findById :: Maybe String -> IO (Model.Band)
+findById id = fmap head $ mapRowsTo (query sql) toBand
+  where
+    -- #TODO change to PreparedStatement
+    sql = "select * from bands where id = " ++ (fromMaybe "" id)
 
 --- Maps database rows to Model.Band instances
 toBand :: [SqlValue] -> Model.Band
