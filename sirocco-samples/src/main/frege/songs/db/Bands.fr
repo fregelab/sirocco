@@ -6,54 +6,14 @@ module songs.db.Bands where
 import sirocco.internal.JDBC
 import sirocco.internal.FDBC
 
-import songs.db.Db (createStatement)
-import songs.data.Bands as BandsModel
-
-instance Show SqlValue where
-    show (SqlString s) = "String: " ++ s
-    show (SqlInt s)    = "Int: " ++ show s
-    show (SqlLong s)   = "Long: " ++ show s
-    show t = "Some value"
+import songs.db.Db
+import songs.data.Bands as Model
 
 --- Lists all available bands in database
-findAllBands :: IO  [Band]
-findAllBands = do
-   stmt    <- createStatement
-   rs      <- Statement.executeQuery stmt "SELECT * FROM bands"
-   -- This should be refactored to something like `fetchRows rs`
-   rowToBands $ takeWhileRight $ repeat $ fetchRow rs
+findAllBands :: IO  [Model.Band]
+findAllBands = mapRowsTo (query "SELECT * FROM bands") toBand
 
-rowToBands :: IO [CatchAll [SqlValue]] -> IO [Band]
-rowToBands xs = fmap fromRight $ fmap (fmap (fmap toBand)) $ fmap sequence xs
-
-{--
-rowToBands' :: IO [Either Throwable [SqlValue]] -> IO [Band]
-rowToBands' xs =
-  do
-    row <- rows
-    return toBand <$>  $  row
-  where
-    rows = fmap sequence xs
--}
-
-fromRight           :: Either a b -> b
-fromRight (Left _)  = error "Either.Unwrap.fromRight: Argument takes form 'Left _'" -- yuck
-fromRight (Right x) = x
-
-toBand :: [SqlValue] -> Band
-toBand ((SqlLong id):(SqlString name):[]) = Band { id = id, name = name}
-toBand _ = Band { id = 0, name = "john.doe" }
-
-{--
-   When invoking the function `fetchRow` it only ask for one row of the
-   current ResultSet. Every call to fetchRow returns an IO Right _
-   while there are records, once the records have been consumed the
-   fetchRow call will return IO Left _ records.
--}
-takeWhileRight :: [IO (CatchAll a)] -> IO [(CatchAll a)]
-takeWhileRight (x:xs) = do
-  y <- x
-  case y of
-      Right _ -> (y:) <$> (takeWhileRight xs)
-      Left  _ -> pure []
-takeWhileRight []     = return []
+--- Maps database rows to Model.Band instances
+toBand :: [SqlValue] -> Model.Band
+toBand ((SqlLong id):(SqlString name):[]) = Model.Band { id = id, name = name}
+toBand _                                  = Model.Band { id = 0 , name = "john.doe" }

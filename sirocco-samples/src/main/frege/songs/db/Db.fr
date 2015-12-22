@@ -9,6 +9,7 @@ module songs.db.Db where
 
 import sirocco.internal.JDBC
 import sirocco.internal.FDBC
+import songs.data.Util
 
 databaseURI = "jdbc:h2:~/test"
 
@@ -21,3 +22,32 @@ createStatement :: IO Statement
 createStatement = do
    conn    <- connection
    Connection.createStatement conn
+
+instance Show SqlValue where
+    show (SqlString s) = "String: " ++ s
+    show (SqlInt s)    = "Int: " ++ show s
+    show (SqlLong s)   = "Long: " ++ show s
+    show t = "Some value"
+
+query :: String -> IO [CatchAll [SqlValue]]
+query sql = do
+   stmt    <- createStatement
+   rs      <- Statement.executeQuery stmt sql
+   takeWhileRight $ repeat $ fetchRow rs
+
+mapRowsTo :: IO [CatchAll [SqlValue]] -> ([SqlValue] -> a) -> IO [a]
+mapRowsTo xs mapper = fmap fromRight $ fmap (fmap (fmap mapper)) $ fmap sequence xs
+
+{--
+   When invoking the function `fetchRow` it only ask for one row of the
+   current ResultSet. Every call to fetchRow returns an IO Right _
+   while there are records, once the records have been consumed the
+   fetchRow call will return IO Left _ records.
+-}
+takeWhileRight :: [IO (CatchAll a)] -> IO [(CatchAll a)]
+takeWhileRight (x:xs) = do
+  y <- x
+  case y of
+      Right _ -> (y:) <$> (takeWhileRight xs)
+      Left  _ -> pure []
+takeWhileRight []     = return []

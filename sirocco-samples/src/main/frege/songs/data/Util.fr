@@ -1,0 +1,9 @@
+module songs.data.Util where
+
+{--
+   This function is very useful, it extracts a value wrapped in a Right. It Left then
+   it throws an error
+-}
+fromRight           :: Either a b -> b
+fromRight (Left _)  = error "Either.Unwrap.fromRight: Argument takes form 'Left _'" -- yuck
+fromRight (Right x) = x
