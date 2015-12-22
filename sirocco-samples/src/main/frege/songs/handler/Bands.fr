@@ -4,24 +4,24 @@
 -}
 module songs.handler.Bands where
 
-import Data.JSON
+import Data.JSON (toJSON)
 import chinook.Spark
 
-import songs.db.Bands as BandsDB
-import songs.data.Bands as BandsModel
-
+import songs.db.Bands as DB
+import songs.data.Bands as Model
 
 {--
  Reducing boiler plate code when converting
  any instance to JSON
 -}
-renderJSON :: Band -> Maybe String
+renderJSON :: Model.Band -> Maybe String
 renderJSON = Just . show . toJSON
 
-renderJSONList :: [Band] -> Maybe String
+renderJSONList :: [Model.Band] -> Maybe String
 renderJSONList = Just . show . toJSON
+
 {--
  List all available bands
 -}
 list :: Request -> Response -> IO (Maybe String)
-list = \req \res -> renderJSONList <$> BandsDB.findAllBands
+list = \req \res -> renderJSONList <$> DB.findAllBands
