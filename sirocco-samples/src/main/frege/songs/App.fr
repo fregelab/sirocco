@@ -10,4 +10,4 @@ main _  = do
     createBandTable
     insertBands
     -- List all available bands
-    get  "/bands"  findAllBands
+    get  "/bands"  list

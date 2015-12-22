@@ -7,7 +7,9 @@ module songs.handler.Bands where
 import Data.JSON
 import chinook.Spark
 
+import songs.db.Bands as BandsDB
 import songs.data.Bands as BandsModel
+
 
 {--
  Reducing boiler plate code when converting
@@ -16,9 +18,10 @@ import songs.data.Bands as BandsModel
 renderJSON :: Band -> Maybe String
 renderJSON = Just . show . toJSON
 
+renderJSONList :: [Band] -> Maybe String
+renderJSONList = Just . show . toJSON
 {--
  List all available bands
 -}
-findAllBands :: Request -> Response -> IO (Maybe String)
-findAllBands = \req \res -> do
-  return $ renderJSON Band { id = 1, name = "Whitesnake" }
+list :: Request -> Response -> IO (Maybe String)
+list = \req \res -> renderJSONList <$> BandsDB.findAllBands
