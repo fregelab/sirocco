@@ -16,15 +16,29 @@ instance Show SqlValue where
     show t = "Some value"
 
 --- Lists all available bands in database
-findAllBands :: IO (CatchAll [Band])
+findAllBands :: IO  [Band]
 findAllBands = do
    stmt    <- createStatement
    rs      <- Statement.executeQuery stmt "SELECT * FROM bands"
    -- This should be refactored to something like `fetchRows rs`
    rowToBands $ takeWhileRight $ repeat $ fetchRow rs
 
-rowToBands :: IO [CatchAll [SqlValue]] -> IO (CatchAll [Band])
-rowToBands xs = fmap (fmap (fmap toBand)) $ fmap sequence xs
+rowToBands :: IO [CatchAll [SqlValue]] -> IO [Band]
+rowToBands xs = fmap fromRight $ fmap (fmap (fmap toBand)) $ fmap sequence xs
+
+{--
+rowToBands' :: IO [Either Throwable [SqlValue]] -> IO [Band]
+rowToBands' xs =
+  do
+    row <- rows
+    return toBand <$>  $  row
+  where
+    rows = fmap sequence xs
+-}
+
+fromRight           :: Either a b -> b
+fromRight (Left _)  = error "Either.Unwrap.fromRight: Argument takes form 'Left _'" -- yuck
+fromRight (Right x) = x
 
 toBand :: [SqlValue] -> Band
 toBand ((SqlLong id):(SqlString name):[]) = Band { id = id, name = name}
