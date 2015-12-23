@@ -35,8 +35,8 @@ query sql = do
    rs      <- Statement.executeQuery stmt sql
    takeWhileRight $ repeat $ fetchRow rs
 
-mapRowsTo :: IO [CatchAll [SqlValue]] -> ([SqlValue] -> a) -> IO [a]
-mapRowsTo xs mapper = fmap fromRight $ fmap (fmap (fmap mapper)) $ fmap sequence xs
+mapRowsTo :: ([SqlValue] -> a) -> IO [CatchAll [SqlValue]] ->  IO [a]
+mapRowsTo mapper xs = fmap fromRight $ fmap (fmap (fmap mapper)) $ fmap sequence xs
 
 {--
    When invoking the function `fetchRow` it only ask for one row of the
