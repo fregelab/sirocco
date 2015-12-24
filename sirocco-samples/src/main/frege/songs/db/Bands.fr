@@ -11,15 +11,18 @@ import songs.data.Bands as Model
 
 --- Lists all available bands in database
 findAll :: IO  [Model.Band]
-findAll = mapToBands (query "SELECT * FROM bands")
+findAll = mapToBands (query connection sql params)
+  where sql    = Just "SELECT * FROM bands"
+        params = []
 
 --- Finds a specific band by id
 findById :: Maybe String -> IO (Model.Band)
-findById id = fmap head bands
+findById id = fmap head bands -- #TODO head is dangerous HERE
   where
-    -- #TODO change to PreparedStatement
-    sql   = "select * from bands where id = " ++ (fromMaybe "" id)
-    bands = mapToBands $ (query sql)
+    sql    = Just "select * from bands where id = ?"
+    -- #TODO Params should be Maybe too
+    params = [(1, fromMaybe "" id)]
+    bands  = mapToBands $ (query connection sql params)
 
 --- Maps a list of rows to Model.Band instances
 mapToBands :: IO [CatchAll [SqlValue]] -> IO [Model.Band]
