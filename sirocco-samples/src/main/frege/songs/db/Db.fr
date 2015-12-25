@@ -11,12 +11,43 @@ import sirocco.internal.JDBC
 import sirocco.internal.FDBC
 import songs.data.Util
 
+{--
+  This type class represents a param for a PreparedStatement instance
+-}
+class PreparedParam a where
+    setParam :: PreparedStatement -> (Int, Maybe a) -> IO PreparedStatement
+
+instance PreparedParam Int where
+    setParam stmt (pos, value) = case value of
+      Just v  -> do
+        _ <- PreparedStatement.setInt stmt pos v
+        return stmt
+      Nothing -> return stmt
+
+instance PreparedParam String where
+    setParam stmt (pos, value) = case value of
+      Just v  -> do
+        _ <- PreparedStatement.setString stmt pos v
+        return stmt
+      Nothing -> return stmt
+
+instance Show SqlValue where
+    show (SqlString s) = "String: " ++ s
+    show (SqlInt s)    = "Int: " ++ show s
+    show (SqlLong s)   = "Long: " ++ show s
+    show t = "Some value"
+
 databaseURI = "jdbc:h2:~/test"
 
 --- Creates a new connection
 connection :: IO Connection
 connection = DriverManager.getConnection databaseURI "sa" ""
 
+{--
+    Executes a given query to modify the state of the database: create a table,
+    drop table... If the query succeed the function will return true, otherwise
+    it will return false
+-}
 execute :: IO Connection -> Maybe String -> IO Bool
 execute connection sql = do
   conn   <- connection
@@ -26,6 +57,10 @@ execute connection sql = do
         PreparedStatement.execute stmt
     Nothing -> pure false
 
+{--
+    Executes queries of type UPDATE/INSERT. It will be returning those
+    affected rows
+-}
 update :: IO Connection -> Maybe String -> IO Int
 update connection msql = do
   conn   <- connection
@@ -35,7 +70,21 @@ update connection msql = do
       PreparedStatement.executeUpdate stmt
     Nothing  -> pure 0
 
-query :: IO Connection -> Maybe String -> [(Int, String)] -> IO [CatchAll [SqlValue]]
+{--
+    Sets parameters in a PreparedStatement query. Parameters are taken from a list of
+    tuples of type (Int, Maybe a). The first integer is the position in the query and
+    the second part represents the possible value
+-}
+setParams :: (PreparedParam a) => PreparedStatement -> [(Int, Maybe a)] -> IO PreparedStatement
+setParams stmt []     = return stmt
+setParams stmt (x:xs) = do
+  _ <- setParam stmt x
+  setParams stmt xs
+
+{--
+    Executes a query and returns a list of results
+-}
+query :: (PreparedParam a) => IO Connection -> Maybe String -> [(Int, Maybe a)] -> IO [CatchAll [SqlValue]]
 query connection msql parameters = do
   conn   <- connection
   case msql of
@@ -46,18 +95,9 @@ query connection msql parameters = do
       takeWhileRight $ repeat $ fetchRow rows
     Nothing -> pure []
 
-setParams :: PreparedStatement -> [(Int,String)] -> IO PreparedStatement
-setParams stmt []     = return stmt
-setParams stmt ((y,z):xs) = do
-  _ <- PreparedStatement.setString stmt y z
-  setParams stmt xs
-
-instance Show SqlValue where
-    show (SqlString s) = "String: " ++ s
-    show (SqlInt s)    = "Int: " ++ show s
-    show (SqlLong s)   = "Long: " ++ show s
-    show t = "Some value"
-
+{--
+    This function maps a list of query results to a specific type of list
+-}
 mapRowsTo :: ([SqlValue] -> a) -> IO [CatchAll [SqlValue]] ->  IO [a]
 mapRowsTo mapper xs = fmap fromRight $ fmap (fmap (fmap mapper)) $ fmap sequence xs
 
