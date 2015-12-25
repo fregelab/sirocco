@@ -27,13 +27,13 @@ renderJSONList = Just . show . toJSON
 {--
  List all available bands
 -}
-list :: Request -> Response -> IO (Maybe String)
+list :: MutableIO Request -> MutableIO Response -> IO (Maybe String)
 list = \req \res -> renderJSONList <$> DB.findAll
 
 {--
   Gets a specific band by its id
 -}
-byId :: Request -> Response -> IO (Maybe String)
+byId :: MutableIO Request -> MutableIO Response -> IO (Maybe String)
 byId = \req \res -> do
   id     <- req.paths ":id"
   band   <- DB.findById id
