@@ -37,4 +37,6 @@ byId :: MutableIO Request -> MutableIO Response -> IO (Maybe String)
 byId = \req \res -> do
   id     <- req.paths ":id"
   band   <- DB.findById id
-  return $ renderJSON band
+  return $ case band of
+    Just b  -> renderJSON b
+    Nothing -> Just "{\"error\":\"no value\"}"

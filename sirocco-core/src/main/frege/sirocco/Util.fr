@@ -1,4 +1,4 @@
-module songs.data.Util where
+module sirocco.Util where
 
 {--
    This function is very useful, it extracts a value wrapped in a Right. It Left then

@@ -1,7 +1,7 @@
 {--
   This code has been copied from https://github.com/DellCliff/frege-dbc
 -}
-module sirocco.internal.JDBC where
+module sirocco.JDBC where
 
 data CallableStatement = mutable native java.sql.CallableStatement where
 
