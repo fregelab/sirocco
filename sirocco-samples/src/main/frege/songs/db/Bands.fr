@@ -3,8 +3,8 @@
 -}
 module songs.db.Bands where
 
-import sirocco.internal.JDBC
-import sirocco.internal.FDBC
+import sirocco.FDBC
+import sirocco.Sirocco
 
 import songs.db.Db
 import songs.data.Bands as Model
@@ -16,10 +16,10 @@ findAll = mapToBands (query connection sql params)
         params = [] :: [(Int, Maybe Int)]
 
 --- Finds a specific band by id
-findById :: Maybe String -> IO (Model.Band)
-findById id = fmap head bands -- #TODO head is dangerous HERE
+findById :: Maybe String -> IO (Maybe Model.Band)
+findById id = getFirst bands
   where
-    sql    = Just "select * from bands where id = ?"
+    sql    = Just "SELECT * FROM bands WHERE id = ?"
     params = [(1, id)]
     bands  = mapToBands (query connection sql params)
 
@@ -31,3 +31,11 @@ mapToBands = mapRowsTo toBand
 toBand :: [SqlValue] -> Model.Band
 toBand ((SqlLong id):(SqlString name):[]) = Model.Band { id = id, name = name}
 toBand _ = error "Error while parsing Band"
+
+--- Gets first element of a list of records
+getFirst :: IO [a] -> IO (Maybe a)
+getFirst results = do
+  rows <- results
+  return $ case rows of
+    (x:_)  -> Just x
+    []     -> Nothing

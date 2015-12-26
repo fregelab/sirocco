@@ -1,9 +1,9 @@
 {--
   This code has been copied from https://github.com/DellCliff/frege-dbc
 -}
-module sirocco.internal.FDBC where
+module sirocco.FDBC where
 
-import sirocco.internal.JDBC
+import sirocco.JDBC
 
 data SqlValue = SqlShort Short
     | SqlInt Int

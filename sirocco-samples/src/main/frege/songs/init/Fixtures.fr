@@ -4,9 +4,7 @@
 -}
 module songs.init.Fixtures where
 
-import sirocco.internal.JDBC
-import sirocco.internal.FDBC
-
+import sirocco.Sirocco
 import songs.db.Db
 
 --- Drops the Bands table
