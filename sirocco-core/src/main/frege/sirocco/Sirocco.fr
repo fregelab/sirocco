@@ -8,6 +8,38 @@ import sirocco.FDBC
 createConnection :: String -> String -> String -> IO Connection
 createConnection uri username password = DriverManager.getConnection uri username password
 
+data SqlParam = IntParam Int       |
+                     StringParam String |
+                     BoolParam Bool     |
+                     ByteParam Byte     |
+                     DoubleParam Double |
+                     FloatParam Float   |
+                     LongParam Long
+
+class ToParam a where
+  toParam :: Maybe a -> Maybe SqlParam
+
+instance ToParam Int where
+  toParam = fmap IntParam
+
+instance ToParam String where
+  toParam = fmap StringParam
+
+instance ToParam Bool where
+  toParam = fmap BoolParam
+
+instance ToParam Byte where
+  toParam = fmap ByteParam
+
+instance ToParam Double where
+  toParam = fmap DoubleParam
+
+instance ToParam Float where
+  toParam = fmap FloatParam
+
+instance ToParam Long where
+  toParam = fmap LongParam
+
 {--
   This type class represents possible parameters for a PreparedStatement instance
 -}
