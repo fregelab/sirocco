@@ -23,14 +23,21 @@ findById id = getFirst bands
     params = toParam <$> [id]
     bands  = mapToBands (query connection sql params)
 
+findAllByYears :: Maybe Int -> Maybe Int -> IO [Model.Band]
+findAllByYears from to = bands
+  where
+    sql    = Just "SELECT * FROM bands WHERE year >= ? and year <= ?"
+    params = toParam <$> [from, to]
+    bands  = mapToBands (query connection sql params)
+
 --- Maps a list of rows to Model.Band instances
 mapToBands :: IO [CatchAll [SqlValue]] -> IO [Model.Band]
 mapToBands = mapRowsTo toBand
 
 --- Maps a single row to a Model.Band instances
 toBand :: [SqlValue] -> Model.Band
-toBand ((SqlLong id):(SqlString name):[]) = Model.Band { id = id, name = name}
-toBand _ = error "Error while parsing Band"
+toBand ((SqlLong id):(SqlString name):(SqlLong year):[]) = Model.Band { id = id, name = name, year = year }
+toBand x = error $ "Error while parsing Band" ++ show x
 
 --- Gets first element of a list of records
 getFirst :: IO [a] -> IO (Maybe a)
