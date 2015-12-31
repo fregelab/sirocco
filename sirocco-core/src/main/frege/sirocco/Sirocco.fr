@@ -8,14 +8,24 @@ import sirocco.FDBC
 createConnection :: String -> String -> String -> IO Connection
 createConnection uri username password = DriverManager.getConnection uri username password
 
-data SqlParam = IntParam Int       |
-                     StringParam String |
-                     BoolParam Bool     |
-                     ByteParam Byte     |
-                     DoubleParam Double |
-                     FloatParam Float   |
-                     LongParam Long
+{--
+   `SqlParam` data type represents all possible type params that
+   can be used in a sql statement.
+-}
+data SqlParam = IntParam    Int    |
+                StringParam String |
+                BoolParam   Bool   |
+                ByteParam   Byte   |
+                DoubleParam Double |
+                FloatParam  Float  |
+                LongParam   Long   |
+                ShortParam  Short  |
+                ObjectParam Object
 
+{--
+  This type class defines al possible conversions of type
+  (a -> SqlParam) through function `toParam`
+-}
 class ToParam a where
   toParam :: Maybe a -> Maybe SqlParam
 
@@ -40,54 +50,42 @@ instance ToParam Float where
 instance ToParam Long where
   toParam = fmap LongParam
 
-{--
-  This type class represents possible parameters for a PreparedStatement instance
--}
-class PreparedParam a where
-    setParam :: PreparedStatement -> (Int, Maybe a) -> IO PreparedStatement
+instance ToParam Short where
+  toParam = fmap ShortParam
 
-instance PreparedParam Int where
-    setParam stmt (pos, value) = useWith PreparedStatement.setInt stmt pos value
-
-instance PreparedParam String where
-    setParam stmt (pos, value) = useWith PreparedStatement.setString stmt pos value
-
-instance PreparedParam Bool where
-  setParam stmt (pos, value) = useWith PreparedStatement.setBoolean stmt pos value
-
-instance PreparedParam Byte where
-  setParam stmt (pos, value) = useWith PreparedStatement.setByte stmt pos value
-
-instance PreparedParam Double where
-  setParam stmt (pos, value) = useWith PreparedStatement.setDouble stmt pos value
-
-instance PreparedParam Float where
-  setParam stmt (pos, value) = useWith PreparedStatement.setFloat stmt pos value
-
-instance PreparedParam Long where
-  setParam stmt (pos, value) = useWith PreparedStatement.setLong stmt pos value
-
-instance PreparedParam Short where
-  setParam stmt (pos, value) = useWith PreparedStatement.setShort stmt pos value
-
---- Utility function to reduce the boilerplate code to create a PreparedParam instance
-useWith :: (PreparedStatement -> Int -> a -> IO()) -> PreparedStatement -> Int -> Maybe a -> IO PreparedStatement
-useWith fn stmt pos value = case value of
-  Just v  -> do
-    _ <- fn stmt pos v
-    return stmt
-  Nothing -> return stmt
+instance ToParam Object where
+  toParam = fmap ObjectParam
 
 {--
     Sets parameters in a PreparedStatement query. Parameters are taken from a list of
     tuples of type (Int, Maybe a). The first integer is the position in the query and
     the second part represents the possible value
 -}
-setParams :: (PreparedParam a) => PreparedStatement -> [(Int, Maybe a)] -> IO PreparedStatement
-setParams stmt []     = return stmt
-setParams stmt (x:xs) = do
-  _ <- setParam stmt x
-  setParams stmt xs
+setParams' :: PreparedStatement -> Int -> [Maybe SqlParam] -> IO PreparedStatement
+setParams' stmt _ []            = return stmt
+setParams' stmt n (x:xs)        = case x of
+    Just param    -> do
+        mstmt     <- case param of
+            StringParam p -> useit PreparedStatement.setString   stmt n p
+            IntParam    p -> useit PreparedStatement.setInt      stmt n p
+            BoolParam   p -> useit PreparedStatement.setBoolean  stmt n p
+            ByteParam   p -> useit PreparedStatement.setByte     stmt n p
+            DoubleParam p -> useit PreparedStatement.setDouble   stmt n p
+            FloatParam  p -> useit PreparedStatement.setFloat    stmt n p
+            LongParam   p -> useit PreparedStatement.setLong     stmt n p
+            ShortParam  p -> useit PreparedStatement.setShort    stmt n p
+            ObjectParam p -> useit PreparedStatement.setObject   stmt n p
+            _             -> fail "Need SqlParam here"
+        setParams' mstmt (n+1) xs
+
+    Nothing       -> do
+        mstmt     <- useit PreparedStatement.setNull stmt n 0
+        setParams' stmt (n+1) xs
+
+useit :: (PreparedStatement -> Int -> a -> IO ()) -> PreparedStatement -> Int -> a -> IO PreparedStatement
+useit fn stmt pos value = do
+   _ <- fn stmt pos value
+   return stmt
 
 {--
     Instance to show SqlValue instances as a String
@@ -139,13 +137,13 @@ update connection msql = do
 {--
     Executes a query and returns a list of results
 -}
-query :: (PreparedParam a) => IO Connection -> Maybe String -> [(Int, Maybe a)] -> IO [CatchAll [SqlValue]]
+query :: IO Connection -> Maybe String -> [Maybe SqlParam] -> IO [CatchAll [SqlValue]]
 query connection msql parameters = do
   conn   <- connection
   case msql of
     Just sql -> do
       stmt   <- Connection.prepareStatement conn sql
-      stmt'  <- setParams stmt parameters
+      stmt'  <- setParams' stmt 0 parameters
       rows   <- PreparedStatement.executeQuery stmt'
       takeWhileRight $ repeat $ fetchRow rows
     Nothing -> pure []

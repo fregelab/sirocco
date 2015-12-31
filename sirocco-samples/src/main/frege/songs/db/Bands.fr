@@ -13,14 +13,14 @@ import songs.data.Bands as Model
 findAll :: IO  [Model.Band]
 findAll = mapToBands (query connection sql params)
   where sql    = Just "SELECT * FROM bands"
-        params = [] :: [(Int, Maybe Int)]
+        params = [] :: [Maybe SqlParam]
 
 --- Finds a specific band by id
 findById :: Maybe String -> IO (Maybe Model.Band)
 findById id = getFirst bands
   where
     sql    = Just "SELECT * FROM bands WHERE id = ?"
-    params = [(1, id)]
+    params = toParam <$> [id]
     bands  = mapToBands (query connection sql params)
 
 --- Maps a list of rows to Model.Band instances
