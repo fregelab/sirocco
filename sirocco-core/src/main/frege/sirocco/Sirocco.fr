@@ -143,7 +143,7 @@ query connection msql parameters = do
   case msql of
     Just sql -> do
       stmt   <- Connection.prepareStatement conn sql
-      stmt'  <- setParams' stmt 0 parameters
+      stmt'  <- setParams' stmt 1 parameters
       rows   <- PreparedStatement.executeQuery stmt'
       takeWhileRight $ repeat $ fetchRow rows
     Nothing -> pure []
