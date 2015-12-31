@@ -16,19 +16,19 @@ dropBandTable = do
 --- Creates the Bands table
 createBandTable :: IO ()
 createBandTable = do
-  stmt   <- execute connection $ Just "CREATE TABLE bands (id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, name TEXT NOT NULL)"
+  stmt   <- execute connection $ Just "CREATE TABLE bands (id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, name TEXT NOT NULL, year INTEGER NOT NULL)"
   println $ "Table bands created"
 
 createDrop :: IO ()
 createDrop = do
-  dropBandTable
+  --dropBandTable
   createBandTable
 
 --- Inserts some bands to populate the database
 loadFixtures :: IO ()
 loadFixtures = do
-  _ <- execute connection $ Just "INSERT INTO bands (name) values ('Whitesnake')"
-  _ <- execute connection $ Just "INSERT INTO bands (name) values ('Iron Maiden')"
-  _ <- execute connection $ Just "INSERT INTO bands (name) values ('Metallica')"
-  _ <- execute connection $ Just "INSERT INTO bands (name) values ('Halloween')"
+  _ <- execute connection $ Just "INSERT INTO bands (name, year) values ('Whitesnake', 1978)"
+  _ <- execute connection $ Just "INSERT INTO bands (name, year) values ('Iron Maiden', 1975)"
+  _ <- execute connection $ Just "INSERT INTO bands (name, year) values ('Metallica', 1981)"
+  _ <- execute connection $ Just "INSERT INTO bands (name, year) values ('Helloween', 1984)"
   println $ "List of bands inserted"
