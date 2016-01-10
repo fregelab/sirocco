@@ -4,24 +4,26 @@
 -}
 module songs.handler.Bands where
 
-import chinook.Spark
-
+import chinook.Chinook
 import songs.db.Bands as DB
-import songs.data.Bands as Model
+import songs.data.Json as JSON
 
 {--
  List all available bands
 -}
-list :: MutableIO Request -> MutableIO Response -> IO (Maybe String)
-list = \req \res -> renderJSON <$> DB.findAll
+list :: IO Request -> IO Response
+list req = do
+    bands <- DB.findAll
+    return response.{ output = JSON.render bands }
 
 {--
   Gets a specific band by its id
 -}
-byId :: MutableIO Request -> MutableIO Response -> IO (Maybe String)
-byId = \req \res -> do
-  id     <- req.paths ":id"
+byId :: IO Request -> IO Response
+byId req = do
+  id     <- req.path ":id"
   band   <- DB.findById id
   return $ case band of
-    Just b  -> renderJSON b
-    Nothing -> Just "{\"error\":\"no value\"}"
+    Just b  -> response.{ output = JSON.render b }
+    Nothing -> response.{ status = 400,
+                                   output = JSON.render ("band.error.id.invalid") }

@@ -11,7 +11,7 @@ repositories {
 dependencies {
     compile project (':sirocco-core')
     compile 'com.h2database:h2:1.4.187'
-    compile 'com.github.januslynd:chinook-core:0.1.0-beta-c27dd63'
+    compile 'com.github.januslynd:chinook-core:0.1.0-beta-24c8965'
 }
 
 compileFrege.dependsOn 'compileJava'
