@@ -1,0 +1,14 @@
+== Update
+
+`Sirocco.update` can be used when manipulating the database (delete,
+insert, update):
+
+[source,haskell]
+----
+include::{coreSrc}/sirocco/Sirocco.fr[tags=update]
+----
+
+It will return the number of rows affected for the SQL statement.
+
+WARNING: At the moment it doesn't allow parameters, but obviously it
+will in future versions.

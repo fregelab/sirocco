@@ -1,0 +1,11 @@
+== Connection
+
+To create a connection:
+
+[source,haskell]
+----
+include::{sampleSrc}/songs/db/Db.fr[]
+----
+
+<1> String representing the `jdbc` uri
+<2> `sirocco.Sirocco.createConnection` function to connect to the database

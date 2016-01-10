@@ -10,11 +10,15 @@ import songs.db.Db
 import songs.data.Bands as Model
 
 --- Lists all available bands in database
+-- tag::selectall[]
 findAll :: IO  [Model.Band]
-findAll = mapToBands (query connection sql params)
-  where sql    = Just "SELECT * FROM bands"
-        params = [] :: [Maybe SqlParam]
+findAll = mapToBands select
+  where sql    = Just "SELECT * FROM bands"  -- <1>
+        params = [] :: [Maybe SqlParam]      -- <2>
+        select = query connection sql params -- <3>
+-- end::selectall[]
 
+-- tag::singleParam[]
 --- Finds a specific band by id
 findById :: Maybe String -> IO (Maybe Model.Band)
 findById id = getFirst bands
@@ -22,14 +26,19 @@ findById id = getFirst bands
     sql    = Just "SELECT * FROM bands WHERE id = ?"
     params = toParam <$> [id]
     bands  = mapToBands (query connection sql params)
+-- end::singleParam[]
 
+-- tag::findAllByYears[]
 findAllByYears :: Maybe Int -> Maybe Int -> IO [Model.Band]
 findAllByYears from to = bands
   where
-    sql    = Just "SELECT * FROM bands WHERE year >= ? and year <= ?"
-    params = toParam <$> [from, to]
-    bands  = mapToBands (query connection sql params)
+    sql    = Just "SELECT * FROM bands WHERE year >= ? and year <= ?" -- <1>
+    params = toParam <$> [from, to] -- <2>
+    result = query connection sql params -- <3>
+    bands  = mapToBands result -- <4>
+-- end::findAllByYears[]
 
+-- tag::mapToBands[]
 --- Maps a list of rows to Model.Band instances
 mapToBands :: IO [CatchAll [SqlValue]] -> IO [Model.Band]
 mapToBands = mapRowsTo toBand
@@ -38,6 +47,7 @@ mapToBands = mapRowsTo toBand
 toBand :: [SqlValue] -> Model.Band
 toBand ((SqlLong id):(SqlString name):(SqlLong year):[]) = Model.Band { id = id, name = name, year = year }
 toBand x = error $ "Error while parsing Band" ++ show x
+-- end::mapToBands[]
 
 --- Gets first element of a list of records
 getFirst :: IO [a] -> IO (Maybe a)

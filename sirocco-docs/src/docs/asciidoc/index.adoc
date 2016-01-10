@@ -1,0 +1,25 @@
+= Sirocco
+:revnumber: {project-version}
+:numbered:
+:imagesDir: images/
+:baseDir: ../../../../..
+:stem:
+
+:coreBase: {baseDir}/sirocco-core
+:sampleBase: {baseDir}/sirocco-sample
+
+:coreSrc: {coreBase}/src/main/frege
+:sampleSrc: {sampleBase}/src/main/frege
+
+"Sirocco, scirocco, /sɪˈrɒkoʊ/, jugo or, rarely, siroc (Catalan: Xaloc, Greek: Σορόκος, Spanish: Siroco, Occitan: Siròc, Eisseròc) is a Mediterranean wind that comes from the Sahara and can reach hurricane speeds in North Africa and Southern Europe."
+-- Wikipedia
+
+`Sirocco` is a small database abstraction on top of `jdbc`.
+
+include::chapter/connection.adoc[]
+
+include::chapter/query.adoc[]
+
+include::chapter/execute.adoc[]
+
+include::chapter/update.adoc[]
