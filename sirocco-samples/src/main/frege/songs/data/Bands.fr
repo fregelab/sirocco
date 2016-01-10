@@ -36,11 +36,3 @@ instance FromJSON Band where
       return Band {id, name, year}
     -- PARSING KO
     _        ->  fail ("expected {\"name\" : ...}, found " ++ show v)
-
-
-{--
- Reducing boiler plate code when converting
- any instance to JSON
--}
-renderJSON :: (ToJSON a) => a -> Maybe String
-renderJSON = Just . show . toJSON
