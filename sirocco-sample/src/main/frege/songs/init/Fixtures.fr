@@ -7,6 +7,7 @@ module songs.init.Fixtures where
 import sirocco.Sirocco
 import songs.db.Db
 
+-- tag::execute[]
 --- Drops the Bands table
 dropBandTable :: IO ()
 dropBandTable = do
@@ -18,11 +19,15 @@ createBandTable :: IO ()
 createBandTable = do
   stmt   <- execute connection $ Just "CREATE TABLE bands (id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, name TEXT NOT NULL, year INTEGER NOT NULL)"
   println $ "Table bands created"
+-- end::execute[]
 
 createDrop :: IO ()
 createDrop = do
-  --dropBandTable
+  _ <- dropBandTable
+          `catch` \(e :: Exception) -> return ()
+          `finally` (println "Table already gone")
   createBandTable
+
 
 --- Inserts some bands to populate the database
 loadFixtures :: IO ()

@@ -26,8 +26,10 @@ data SqlParam = IntParam    Int    |
   This type class defines al possible conversions of type
   (a -> SqlParam) through function `toParam`
 -}
+-- tag::toParam[]
 class ToParam a where
   toParam :: Maybe a -> Maybe SqlParam
+-- end::toParam[]
 
 instance ToParam Int where
   toParam = fmap IntParam
@@ -111,7 +113,9 @@ instance Show SqlValue where
     drop table... If the query succeed the function will return true, otherwise
     it will return false
 -}
+-- tag::execute[]
 execute :: IO Connection -> Maybe String -> IO Bool
+-- end::execute[]
 execute connection sql = do
   conn   <- connection
   case sql of
@@ -124,7 +128,9 @@ execute connection sql = do
     Executes queries of type UPDATE/INSERT. It will be returning those
     affected rows
 -}
+-- tag::update[]
 update :: IO Connection -> Maybe String -> IO Int
+-- end::update[]
 update connection msql = do
   conn   <- connection
   case msql of
@@ -137,7 +143,9 @@ update connection msql = do
 {--
     Executes a query and returns a list of results
 -}
+-- tag::query[]
 query :: IO Connection -> Maybe String -> [Maybe SqlParam] -> IO [CatchAll [SqlValue]]
+-- end::query[]
 query connection msql parameters = do
   conn   <- connection
   case msql of
@@ -151,7 +159,9 @@ query connection msql parameters = do
 {--
     This function maps a list of query results to a specific type of list
 -}
+-- tag::mapRowsTo[]
 mapRowsTo :: ([SqlValue] -> a) -> IO [CatchAll [SqlValue]] ->  IO [a]
+-- end::mapRowsTo[]
 mapRowsTo mapper xs = fmap fromRight $ fmap (fmap (fmap mapper)) $ fmap sequence xs
 
 {--

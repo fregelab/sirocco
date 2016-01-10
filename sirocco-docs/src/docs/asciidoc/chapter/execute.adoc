@@ -1,0 +1,17 @@
+== Execute
+
+`Sirocco.execute` can be used when defining database structures
+(create, drop, alter...):
+
+[source,haskell]
+----
+include::{coreSrc}/sirocco/Sirocco.fr[tags=execute]
+----
+
+It only returns a `Bool` value indicating whether the action was a
+success or a failure.
+
+[source,haskell]
+----
+include::{sampleSrc}/songs/init/Fixtures.fr[tags=execute]
+----

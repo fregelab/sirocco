@@ -1,0 +1,90 @@
+== Query
+
+To perform a prepared statement query you should be using the function `Sirocco.query`:
+
+[source,haskell]
+----
+include::{coreSrc}/sirocco/Sirocco.fr[tags=query]
+----
+
+The function receives:
+
+* Connection
+* Query
+* Parameters
+
+And returns a list of records of type `CatchAll [SqlValue]`. A
+`CatchAll` type is an alias for `Either Throwable` and `[SqlValue]`
+represents every column of each row. So basically we will be expecting
+a list of rows containing list of column values.
+
+Lets see a `SELECT` example:
+
+[source,haskell]
+----
+include::{sampleSrc}/songs/db/Bands.fr[tags=selectall]
+----
+
+<1> Defining the `SQL` query
+<2> Defining the list of params (empty this time)
+<3> Executing the query
+
+After executing the query we will be mapping the result to another
+datatatype.
+
+=== Mapping results
+
+In the previous example we were mapping our result to a list of
+music bands. `Sirocco` has a helper method to map a given database
+row to a defined user data type.
+
+[source,haskell]
+----
+include::{coreSrc}/sirocco/Sirocco.fr[tags=mapRowsTo]
+----
+
+Basically you need to define a function converting from a given row
+(strictly speaking a list of columns of a given row) to another type.
+
+In our band example this is how it was implemented:
+
+[source,haskell]
+----
+include::{sampleSrc}/songs/db/Bands.fr[tags=mapToBands]
+----
+
+=== Parameters
+
+A param is of type `Sirocco.SqlParam`, that's why we can pass a list of
+parameters to our query, if we were using simple types, Frege wouldn't
+allow us to create a list of different types.
+
+[source,haskell]
+----
+include::{coreSrc}/sirocco/Sirocco.fr[tags=toParam]
+----
+
+In order to convert a simple type to a `SqlParam` we can use the different
+implemented instances of class type `Sirocco.ToParam`. In the following
+example we would like to convert a string to a valid param:
+
+[source,haskell]
+----
+include::{sampleSrc}/songs/db/Bands.fr[tags=singleParam]
+----
+
+NOTE: In the example you can also say `[toParam id]`. You will be
+using this, specially when trying to create params combining different
+types, e.g: `[(toParam . Just) 1, (toParam . Just) "Metallica"]
+
+Here's another example:
+
+[source,haskell]
+----
+include::{sampleSrc}/songs/db/Bands.fr[tags=findAllByYears]
+----
+
+<1> Defining a query with two parameters
+<2> Creating required parameters
+<3> Executing query
+<4> Mapping result

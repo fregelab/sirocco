@@ -1,2 +1,3 @@
 include 'sirocco-core'
-include 'sirocco-samples'
+include 'sirocco-docs'
+include 'sirocco-sample'
