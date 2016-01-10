@@ -1,0 +1,14 @@
+{--
+  This module handles how Band instances are created
+-}
+module songs.data.Json where
+
+import Data.JSON
+import Data.List
+
+{--
+ Reducing boiler plate code when converting
+ any instance to JSON
+-}
+render :: (ToJSON a) => a -> Maybe String
+render = Just . show . toJSON
