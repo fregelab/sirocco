@@ -721,22 +721,35 @@ insert, update):</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-haskell" data-lang="haskell">update :: IO Connection -&gt; Maybe String -&gt; IO Int</code></pre>
+<pre class="prettyprint highlight"><code class="language-haskell" data-lang="haskell">update :: IO Connection -&gt; Maybe String -&gt; [Maybe SqlParam] -&gt; IO Int</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>It will return the number of rows affected for the SQL statement.</p>
 </div>
-<div class="admonitionblock warning">
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-haskell" data-lang="haskell">deleteBandById :: Maybe Int -&gt; IO Int
+deleteBandById id = result
+  where
+    sql    = Just "DELETE FROM bands WHERE id = ?" <i class="conum" data-value="1"></i><b>(1)</b>
+    params = toParam &lt;$&gt; [id] <i class="conum" data-value="2"></i><b>(2)</b>
+    result = update connection sql params <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
 <table>
 <tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-At the moment it doesn&#8217;t allow parameters, but obviously it
-will in future versions.
-</td>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Query</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Params</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Query execution</td>
 </tr>
 </table>
 </div>
