@@ -56,3 +56,12 @@ getFirst results = do
   return $ case rows of
     (x:_)  -> Just x
     []     -> Nothing
+
+-- tag::deleteBandById[]
+deleteBandById :: Maybe Int -> IO Int
+deleteBandById id = result
+  where
+    sql    = Just "DELETE FROM bands WHERE id = ?" -- <1>
+    params = toParam <$> [id] -- <2>
+    result = update connection sql params -- <3>
+-- end::deleteBandById[]

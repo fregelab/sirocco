@@ -129,14 +129,15 @@ execute connection sql = do
     affected rows
 -}
 -- tag::update[]
-update :: IO Connection -> Maybe String -> IO Int
+update :: IO Connection -> Maybe String -> [Maybe SqlParam] -> IO Int
 -- end::update[]
-update connection msql = do
+update connection msql parameters = do
   conn   <- connection
   case msql of
     Just sql -> do
       stmt   <- Connection.prepareStatement conn sql
-      PreparedStatement.executeUpdate stmt
+      stmt'  <- setParams' stmt 1 parameters
+      PreparedStatement.executeUpdate stmt'
     Nothing  -> pure 0
 
 
