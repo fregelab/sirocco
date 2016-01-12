@@ -10,5 +10,11 @@ include::{coreSrc}/sirocco/Sirocco.fr[tags=update]
 
 It will return the number of rows affected for the SQL statement.
 
-WARNING: At the moment it doesn't allow parameters, but obviously it
-will in future versions.
+[source,haskell]
+----
+include::{sampleSrc}/songs/db/Bands.fr[tags=deleteBandById]
+----
+
+<1> Query
+<2> Params
+<3> Query execution
