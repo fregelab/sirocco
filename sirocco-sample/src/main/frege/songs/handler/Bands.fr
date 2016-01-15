@@ -25,5 +25,29 @@ byId req = do
   band   <- DB.findById id
   return $ case band of
     Just b  -> response.{ output = JSON.render b }
-    Nothing -> response.{ status = 400,
-                                   output = JSON.render ("band.error.id.invalid") }
+    Nothing -> badRequestResponse
+
+
+deleteById :: IO Request -> IO Response
+deleteById req = do
+  id   <- getIdFromParam $ req.path ":id"
+  case id of
+    Right idInt -> deletedResponse $ DB.deleteBandById $ Just idInt
+    Left  e     -> return badRequestResponse
+
+getIdFromParam :: IO (Maybe String) -> IO (Either NumberFormatException Int)
+getIdFromParam param = do
+  id <- param
+  return $ case id of
+    Just x  -> x.int
+    Nothing -> "".int
+
+badRequestResponse :: Response
+badRequestResponse = response.{ status = 400 }
+
+-- #TODO JSON is not shown...FIX
+deletedResponse :: IO Int -> IO Response
+deletedResponse rows = do
+  howMany <- rows
+  return response.{ status = 204,
+                    output = JSON.render ("affected.rows." ++ (show howMany)) }
