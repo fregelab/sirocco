@@ -14,5 +14,5 @@ env:
 install: ./gradlew assemble -PbintrayUser=${bintrayUser} -PbintrayKey=${bintrayKey}
 script: ./gradlew clean build :sirocco-core:bintrayUpload -x fregeQuickCheck -PbintrayUser=${bintrayUser} -PbintrayKey=${bintrayKey}
 branches:
-  except:
+  only:
   - master
