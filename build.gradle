@@ -19,12 +19,6 @@ subprojects {
     }
 }
 
-ext.metadata = [
-    group   : "com.github.januslynd",
-    version : "0.1.0-beta-0c7e2db",
-    desc: 'Sirocco is a Frege (http://frege-lang.org) library to access relational databases.'
-]
-
 ext.libraries = [
     frege_core: 'org.frege-lang:frege:3.23.288-gaa3af0c',
     frege_repl: 'org.frege-lang:frege-repl-core:1.3',

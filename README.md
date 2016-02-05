@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/januslynd/sirocco.svg?branch=master)](https://travis-ci.org/januslynd/sirocco)
+
 Frege database experiments based on project: https://github.com/DellCliff/frege-dbc
 
 The `sirocco-samples` project mixes `frege-dbc` with `chinook` to show

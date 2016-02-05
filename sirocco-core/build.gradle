@@ -29,15 +29,15 @@ compileFrege.dependsOn 'compileJava'
 //
 //
 
-group = metadata.group
-version = metadata.version
+group = releaseGroup
+version = releaseVersion
 
 publishing {
     publications {
         mavenCustom(MavenPublication) {
-            groupId metadata.group
+            groupId releaseGroup
             artifactId 'sirocco-core'
-            version metadata.version
+            version releaseVersion
 
             from components.java
         }
@@ -53,17 +53,17 @@ bintray {
     pkg {
         repo            = 'maven'
         name            = 'sirocco-core'
-        desc            =  metadata.desc
+        desc            =  releaseDescription
         websiteUrl      = 'http://januslynd.github.io/sirocco/'
         issueTrackerUrl = 'https://github.com/januslynd/sirocco/issues'
         licenses        = ['Apache-2.0']
         vcsUrl          = 'https://github.com/januslynd/sirocco.git'
-        labels          = ['frege', 'rest']
+        labels          = ['frege', 'database', 'jdbc']
         version {
-            name      = metadata.version
+            name      = releaseVersion
             desc      = 'Sirocco Release'
             released  = new Date()
-            vcsTag    = metadata.version
+            vcsTag    = releaseVersion
         }
     }
 }
