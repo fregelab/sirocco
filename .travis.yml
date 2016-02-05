@@ -1,8 +1,8 @@
 language: java
 jdk:
-- oraclejdk8
+  - oraclejdk8
 before_cache:
-- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
   directories:
   - "$HOME/.gradle/caches/"
@@ -12,7 +12,7 @@ env:
   - secure: gauucejFRV2CAwCjPWqgcwp3seYmUrna9TzQ9OWxFeGOyqzyOm9WcNZC9kwjLUggtkUrIDA84BPA60ob1g38Qt1f5x8R6pc+ZD6YEdQXruI6IUUui+a2P3ZVrVvGkyMZNU9QRBhdOVefhH3/fORW+PB/P/DBJCRTrai+KXdq8jBwwrO4/DLxxmhcrCsvoHycF8md8wNdgsMWGwl6wJjCtCxHs9AXseyYIYPhJ33tgzFEaoVdxG7m7OCAHwhrm+vwUP2QxNKX69mHVogxKX+4+EJYBItqTjBGe7W5gjMxFlknNxoAidlfBWBbHt4wiPackYGCtbKcUnntNBhVlaOf8X6k5aFnY+ATXpT9PFq4mUEVverOAUpY5fyINhyHG8rFjBbnzWXni5LQ+7lSksBrAjV7Lm1od8t4hMkLSn78//smll31locDkEpVwbuGpUxz6mHWNJwdTyxfvREXfSYRbqD5G2K9yXMqx1hSY1f7T5B5L4h8fRbT4EGjsutzdRs2vLSrqZgbn/x0/bRzcVtMjokG+4VhYumdUAZFDzv6g2O085BirU41bTyQJNWEBwYSR7u+syqEGQqC69KShRnp5yjuojLtx6yJlijaLDvBhy35P4KI4KTUMX5SqynMo4CHduVJrV15PqMvZZcJqwmxMvs55e0sa7xwbUB0gBjx63A=
   - secure: VuVTjhkI48UDNkL7XW2wQV3OZDyQTCGOKg+33PhNIcx8C8qmwQLNYit3iFPM+l54ttekDPEw/V6jy1CQC4dcwQcTuFoTXaK6cHrMgaK3KT5NipgRMBbkfh1TSRDxAVl/+yz0jUdG9+F6yMHzXvCUYJyhCwTKWN4qlLxv2+80i5/74UDIpKPtWmXtRn4gI+zwoUsHMNbnlx2tg+uk13keP7+JLK37ZSzv0IWckGj9ucat03k2CYgNtkDfONnwAuT/WtfFIjMERoFujnvw73k/D2XC+a+rFIlTCJ4jfoDjUbhKKZaw/RHDEXpoPHhmRak/xSEcIlA/hfLDKGTaKZRtymSm2FwtgqTo8BH7NWnql40atpa+Y4c9lU5DYfd1j2C1ub0sLLxdhC5NdtHjFEZWi1gJySq2S6oyiuCgUdjDtugJjbJ6Kl4KFL7y2VsbAysmiTs9Ww2HGxU2/HBFC+bv8z1RpIGOikOQF/cAtqbk+tsMMnpQWtpC3wIqIOIwpcQOqv/oppp4iyfG/YRMfMyozmpcTykz82dqweFCJJd5h/li5nmPXkUAGcBRfoeA1ZsvTZ756jtnVVjtQJqIZFD1YtWJCuLeHTdw+t+VHpkDv0tknpTuc+VKok9C0YIzVFn9/yeh7pYx80pLF6I/9CUiVjVuVF5SCJWR5yuXBSWCFcs=
 install: ./gradlew assemble -PbintrayUser=${bintrayUser} -PbintrayKey=${bintrayKey}
-script: ./gradlew clean build :sirocco-core:bintrayUpload -x fregeQuickCheck -PbintrayUser=${bintrayUser} -PbintrayKey=${bintrayKey}"
+script: ./gradlew clean build :sirocco-core:bintrayUpload -x fregeQuickCheck -PbintrayUser=${bintrayUser} -PbintrayKey=${bintrayKey}
 branches:
   except:
   - master
