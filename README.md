@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/januslynd/sirocco.svg?branch=master)](https://travis-ci.org/januslynd/sirocco)
+[![Bintray](https://img.shields.io/bintray/v/januslynd/maven/sirocco-core.svg?style=flat-square)](https://bintray.com/januslynd/maven/sirocco-core)
 
 Frege database experiments based on project: https://github.com/DellCliff/frege-dbc
 
