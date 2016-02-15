@@ -4,7 +4,7 @@
 -}
 module songs.handler.Bands where
 
-import chinook.Chinook
+import chinook.Core
 import songs.db.Bands as DB
 import songs.data.Json as JSON
 
