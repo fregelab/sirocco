@@ -1,5 +1,6 @@
 module songs.App where
 
+import chinook.Router
 import chinook.Chinook
 import songs.init.Fixtures
 import songs.handler.Bands as Handler
@@ -10,6 +11,10 @@ main _  = do
     createDrop
     loadFixtures
     -- Endpoints
-    get    "/bands"      Handler.list
-    get    "/bands/:id"  Handler.byId
-    delete "/bands/:id"  Handler.deleteById
+    Chinook.run [] [
+      "/bands" + [
+          Get    ""     Handler.list,
+          Get    "/:id"  Handler.byId,
+          Delete "/:id"  Handler.deleteById
+          ]
+      ]
