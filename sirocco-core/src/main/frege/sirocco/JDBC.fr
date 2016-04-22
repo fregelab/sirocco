@@ -671,6 +671,8 @@ data PreparedStatement = pure native java.sql.PreparedStatement where
 
   native executeUpdate :: PreparedStatement -> IO Int throws SQLException
 
+  native getGeneratedKeys :: PreparedStatement -> IO ResultSet throws SQLException
+
   native getMetaData :: PreparedStatement -> IO ResultSetMetaData throws SQLException
 
   native getParameterMetaData :: PreparedStatement -> IO ParameterMetaData throws SQLException
