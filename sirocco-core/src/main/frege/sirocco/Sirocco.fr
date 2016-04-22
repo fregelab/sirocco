@@ -126,7 +126,7 @@ execute connection sql = do
 
 {--
     Executes queries of type INSERT for tables with a generated key.
-    It will be return the generated key.
+    It will return the generated key.
 -}
 -- tag::insertAndReturnGeneratedKey[]
 insertAndReturnGeneratedKey :: IO Connection -> Maybe String -> [Maybe SqlParam] -> IO Long
