@@ -125,6 +125,25 @@ execute connection sql = do
     Nothing -> pure false
 
 {--
+    Executes queries of type INSERT for tables with a generated key.
+    It will return the generated key.
+-}
+-- tag::insertAndReturnGeneratedKey[]
+insertAndReturnGeneratedKey :: IO Connection -> Maybe String -> [Maybe SqlParam] -> IO Long
+-- end::insertAndReturnGeneratedKey[]
+insertAndReturnGeneratedKey connection msql parameters = do
+  conn   <- connection
+  case msql of
+    Just sql -> do
+      stmt   <- Connection.prepareStatement conn sql Statement.return_generated_keys
+      stmt'  <- setParams' stmt 1 parameters
+      howMany <- PreparedStatement.executeUpdate stmt'
+      rs <- PreparedStatement.getGeneratedKeys stmt'
+      hasNext <- ResultSet.next rs
+      ResultSet.getLong rs 1
+    Nothing  -> pure 0
+
+{--
     Executes queries of type UPDATE/INSERT. It will be returning those
     affected rows
 -}
