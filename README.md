@@ -4,7 +4,7 @@
 # Sirocco
 
 Sirocco is a Frege library to access relational databases via jdbc.
-Documentation is available at https://januslynd.github.io/sirocco
+Documentation is available at https://fregelab.github.io/sirocco
 
 Sirocco first started as some ideas based on project:
 https://github.com/DellCliff/frege-dbc
