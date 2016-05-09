@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/januslynd/sirocco.svg?branch=master)](https://travis-ci.org/januslynd/sirocco)
-[![Bintray](https://img.shields.io/bintray/v/januslynd/maven/sirocco-core.svg?style=flat-square)](https://bintray.com/januslynd/maven/sirocco-core)
+[![Build Status](https://travis-ci.org/fregelab/sirocco.svg?branch=master)](https://travis-ci.org/fregelab/sirocco)
+[![Bintray](https://img.shields.io/bintray/v/fregelab/maven/sirocco-core.svg?style=flat-square)](https://bintray.com/fregelab/maven/sirocco-core)
 
 # Sirocco
 
@@ -15,13 +15,13 @@ Binaries are available at Bintray:
 
     repositories {
         maven {
-            url  "http://dl.bintray.com/januslynd/maven"
+            url  "http://dl.bintray.com/fregelab/maven"
         }
     }
 
 Gradle dependencies:
 
-    compile 'com.github.januslynd:sirocco-core:0.1.1'
+    compile 'com.github.fregelab:sirocco-core:0.1.2'
 
 ## Examples
 
