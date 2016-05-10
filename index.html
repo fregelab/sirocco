@@ -432,7 +432,7 @@ MathJax.Hub.Config({
 <div id="header">
 <h1>Sirocco</h1>
 <div class="details">
-<span id="revnumber">version unspecified</span>
+<span id="revnumber">version 0.1.2</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -753,13 +753,23 @@ deleteBandById id = result
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>Many times if your table has an auto-generated primary key, it comes
+handy to know the primary key of the record you have just
+inserted. For this you can use the following function:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-haskell" data-lang="haskell">insertAndReturnGeneratedKey :: IO Connection -&gt; Maybe String -&gt; [Maybe SqlParam] -&gt; IO Long</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version unspecified<br>
-Last updated 2016-01-10 17:59:24 +01:00
+Version 0.1.2<br>
+Last updated 2016-05-10 09:05:43 +00:00
 </div>
 </div>
 </body>
