@@ -54,10 +54,10 @@ bintray {
         repo            = 'maven'
         name            = 'sirocco-core'
         desc            =  releaseDescription
-        websiteUrl      = 'http://januslynd.github.io/sirocco/'
-        issueTrackerUrl = 'https://github.com/januslynd/sirocco/issues'
+        websiteUrl      = 'http://fregelab.github.io/sirocco/'
+        issueTrackerUrl = 'https://github.com/fregelab/sirocco/issues'
         licenses        = ['Apache-2.0']
-        vcsUrl          = 'https://github.com/januslynd/sirocco.git'
+        vcsUrl          = 'https://github.com/fregelab/sirocco.git'
         labels          = ['frege', 'database', 'jdbc']
         version {
             name      = releaseVersion

@@ -18,3 +18,12 @@ include::{sampleSrc}/songs/db/Bands.fr[tags=deleteBandById]
 <1> Query
 <2> Params
 <3> Query execution
+
+Many times if your table has an auto-generated primary key, it comes
+handy to know the primary key of the record you have just
+inserted. For this you can use the following function:
+
+[source,haskell]
+----
+include::{coreSrc}/sirocco/Sirocco.fr[tags=insertAndReturnGeneratedKey]
+----

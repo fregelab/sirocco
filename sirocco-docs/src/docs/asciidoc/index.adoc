@@ -1,5 +1,5 @@
 = Sirocco
-:revnumber: {project-version}
+:revnumber: 0.1.2
 :numbered:
 :imagesDir: images/
 :baseDir: ../../../../..
