@@ -53,6 +53,7 @@ bintray {
     pkg {
         repo            = 'maven'
         name            = 'sirocco-core'
+        userOrg         = 'fregelab'
         desc            =  releaseDescription
         websiteUrl      = 'http://fregelab.github.io/sirocco/'
         issueTrackerUrl = 'https://github.com/fregelab/sirocco/issues'
